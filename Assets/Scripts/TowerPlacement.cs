@@ -63,6 +63,12 @@ public class TowerPlacement : MonoBehaviour
         }
 
         // Flattened cylinder colliders can extend above the visible mesh.
+        if (round != null && !round.CanAffordTenten)
+        {
+            round.ShowInsufficientRyo();
+            return;
+        }
+
         float top = pad.GetComponent<Renderer>().bounds.max.y;
         foreach (Collider surface in pad.GetComponentsInChildren<Collider>())
         {
@@ -76,6 +82,12 @@ public class TowerPlacement : MonoBehaviour
         Vector3 position = new Vector3(pad.position.x, top, pad.position.z);
         TentenTower tower = Instantiate(towerPrefab, position, Quaternion.identity);
         tower.transform.SetParent(pad, true);
+        if (round != null && !round.TryPayForTenten())
+        {
+            tower.gameObject.SetActive(false);
+            Destroy(tower.gameObject);
+            return;
+        }
         occupiedPads.Add(pad);
     }
 }

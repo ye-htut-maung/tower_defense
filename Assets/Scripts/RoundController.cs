@@ -13,9 +13,42 @@ public class RoundController : MonoBehaviour
     [SerializeField] private Button startButton;
     [SerializeField] private Button restartButton;
     [SerializeField] private Text statusText;
+    [SerializeField] private Text ryoText;
+    [SerializeField] private Text placementMessage;
 
-    private const int WaveSize = 3;
-    private const float SpawnInterval = 2f;
+    public const int TentenCost = 50;
+    public int Ryo { get; private set; } = 100;
+    public bool CanAffordTenten => Ryo >= TentenCost;
+
+    public void ShowInsufficientRyo()
+    {
+        placementMessage.text = "Not enough Ryo.";
+    }
+
+    public bool TryPayForTenten()
+    {
+        if (HasEnded || !CanAffordTenten) return false;
+        Ryo -= TentenCost;
+        placementMessage.text = "";
+        RefreshUI();
+        return true;
+    }
+
+    [System.Serializable]
+    public class WaveSettings
+    {
+        [Min(1)] public int enemyCount = 3;
+        [Min(0.1f)] public float spawnInterval = 2f;
+
+        public WaveSettings(int count) { enemyCount = count; }
+    }
+
+    [SerializeField] private WaveSettings[] waves =
+        { new WaveSettings(3), new WaveSettings(5), new WaveSettings(7) };
+    private int waveIndex;
+    public int CurrentWaveNumber => waveIndex + 1;
+    public int WaveCount => waves.Length;
+    public int CurrentWaveSize => Mathf.Max(1, waves[waveIndex].enemyCount);
     private readonly List<EnemyHealth> enemies = new List<EnemyHealth>();
     private float nextSpawnTime;
 
@@ -37,6 +70,8 @@ public class RoundController : MonoBehaviour
     public void StartWave()
     {
         if (State != RoundState.Ready) return;
+        SpawnedCount = 0;
+        DefeatedCount = 0;
         State = RoundState.Running;
         SpawnEnemy();
         RefreshUI();
@@ -44,7 +79,7 @@ public class RoundController : MonoBehaviour
 
     private void Update()
     {
-        if (State == RoundState.Running && SpawnedCount < WaveSize && Time.time >= nextSpawnTime)
+        if (State == RoundState.Running && SpawnedCount < CurrentWaveSize && Time.time >= nextSpawnTime)
             SpawnEnemy();
     }
 
@@ -56,17 +91,29 @@ public class RoundController : MonoBehaviour
         enemy.GetComponent<EnemyMovement>().ReachedGate += OnReachedGate;
         enemies.Add(enemy);
         SpawnedCount++;
-        nextSpawnTime = Time.time + SpawnInterval;
+        nextSpawnTime = Time.time + Mathf.Max(0.1f, waves[waveIndex].spawnInterval);
         RefreshUI();
     }
 
     private void OnDefeated(EnemyHealth enemy)
     {
         if (State != RoundState.Running) return;
-        enemies.Remove(enemy);
+        if (!enemies.Remove(enemy)) return;
         DefeatedCount++;
-        if (SpawnedCount == WaveSize && DefeatedCount == WaveSize)
-            EndRound(RoundState.Victory);
+        Ryo += 20;
+        placementMessage.text = "";
+        if (SpawnedCount == CurrentWaveSize && DefeatedCount == CurrentWaveSize)
+        {
+            if (waveIndex == waves.Length - 1)
+                EndRound(RoundState.Victory);
+            else
+            {
+                waveIndex++;
+                State = RoundState.Ready;
+                foreach (KunaiProjectile kunai in FindObjectsByType<KunaiProjectile>()) Remove(kunai.gameObject);
+                RefreshUI();
+            }
+        }
         else RefreshUI();
     }
 
@@ -89,6 +136,7 @@ public class RoundController : MonoBehaviour
     public void RestartRound()
     {
         State = RoundState.Ready;
+        waveIndex = 0;
         foreach (EnemyHealth enemy in FindObjectsByType<EnemyHealth>()) Remove(enemy.gameObject);
         foreach (TentenTower tower in FindObjectsByType<TentenTower>()) Remove(tower.gameObject);
         foreach (KunaiProjectile kunai in FindObjectsByType<KunaiProjectile>()) Remove(kunai.gameObject);
@@ -96,6 +144,8 @@ public class RoundController : MonoBehaviour
         SpawnedCount = 0;
         DefeatedCount = 0;
         nextSpawnTime = 0f;
+        Ryo = 100;
+        placementMessage.text = "";
         placement.ResetPlacement();
         RefreshUI();
     }
@@ -109,7 +159,9 @@ public class RoundController : MonoBehaviour
     private void RefreshUI()
     {
         startButton.interactable = State == RoundState.Ready;
-        statusText.text = State == RoundState.Ready ? "Place Tenten, then Start Wave" :
-            HasEnded ? State.ToString() : $"Wave 1  |  Spawned {SpawnedCount}/3  |  Defeated {DefeatedCount}/3";
+        ryoText.text = $"Ryo: {Ryo}  |  Tenten: {TentenCost} Ryo";
+        string wave = $"Wave {CurrentWaveNumber} of {WaveCount}";
+        statusText.text = State == RoundState.Ready ? $"{wave}  |  Place Tenten, then Start Wave" :
+            HasEnded ? $"{State}  |  {wave}" : $"{wave}  |  Spawned {SpawnedCount}/{CurrentWaveSize}  |  Defeated {DefeatedCount}/{CurrentWaveSize}";
     }
 }

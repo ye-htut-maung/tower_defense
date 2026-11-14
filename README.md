@@ -10,16 +10,27 @@ subtracts health and removes the enemy at zero.
 
 All six pads start empty. In Play Mode, left-click an empty pad to place Tenten.
 Each pad accepts one tower; clicking occupied pads, road, or ground does nothing.
-Place Tenten before clicking **Start Wave**. One wave spawns three enemies, two
-seconds apart. Try towers on Pads 1, 2, and 3 to defend the upper road.
-**Victory** appears only when all three enemies have spawned and been defeated;
+Place Tenten before clicking **Start Wave**. Forest Road has **three waves** of
+**3, 5, and 7 enemies**, each spawning two seconds apart by default. Select
+`Round Controller` in the scene to configure each wave's enemy count and spawn
+interval in the Inspector. The HUD shows **Wave 1 of 3** and advances as waves clear.
+Each wave waits for a manual Start Wave click; repeated clicks cannot overlap
+waves. Place more towers between waves using the preserved towers and Ryo.
+Each round starts with **100 Ryo**; deploying Tenten costs **50 Ryo**.
+The HUD shows both the current balance and deployment cost. Try towers on Pads
+2 and 3 to win with the starting budget. Each defeated enemy awards **20 Ryo**
+once during the wave. Gate arrivals award nothing. Unaffordable placements leave
+the pad empty and show **Not enough Ryo.** Occupied-pad, road, and ground clicks
+spend nothing.
+Each wave clears only after all its enemies have spawned and been defeated.
+**Victory** appears only after Wave 3 clears;
 any enemy reaching the gate immediately causes **Defeat**. The result stays fixed
 and the round stops. **Restart** removes towers, enemies, and kunai, clears the
-pads, and returns to the initial setup so you can place towers and try again.
+pads, restores 100 Ryo, and returns to Wave 1 so you can try again.
 Select `Assets/Prefabs/TentenTower.prefab` to tune attack range (5.5 units), time between
 shots (0.9 seconds), and projectile speed (10 units/second). Each physics hit deals
-1 damage; three hits remove the enemy. Missed kunai expire after 3 seconds.
-Costs, tower selection, and additional waves are not implemented yet. The original
+1 physical damage; three hits remove the enemy. Missed kunai expire after 3 seconds.
+Tower selection is not implemented yet. The original
 starter `SampleScene` is also included.
 
 ## Open and run
