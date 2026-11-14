@@ -3,8 +3,10 @@
 Unity project using Unity **6000.6.0f1** and the Universal Render Pipeline (URP).
 The current map is **Hidden Leaf Forest Road** in `Assets/Scenes/Main.unity`.
 It contains a primitive road, six enemy waypoints, a spawn marker, a gate
-placeholder, and six tower pads. Tower-defense gameplay has not been implemented
-yet. The original starter `SampleScene` is also included.
+placeholder, and six tower pads. One magenta capsule follows the waypoints at
+4 units per second and stops at the gate. Select `Placeholder Enemy` to change
+its movement speed in the Inspector. Spawning, health, combat, and win/loss logic
+are not implemented yet. The original starter `SampleScene` is also included.
 
 ## Open and run
 
