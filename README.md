@@ -8,11 +8,13 @@ placeholder, and six tower pads. One magenta capsule follows the waypoints at
 movement speed in the Inspector. It starts with 3 health; `EnemyHealth.TakeDamage`
 subtracts health and removes the enemy at zero.
 
-One preplaced `Tenten Tower` on `Pad3` throws visible kunai at the enemy in range.
-Select `TowerPads/Pad3/Tenten Tower` to tune attack range (5.5 units), time between
+All six pads start empty. In Play Mode, left-click an empty pad to place Tenten.
+Each pad accepts one tower; clicking occupied pads, road, or ground does nothing.
+Place Tenten on Pad3 early in the run to defeat the moving enemy with three hits.
+Select `Assets/Prefabs/TentenTower.prefab` to tune attack range (5.5 units), time between
 shots (0.9 seconds), and projectile speed (10 units/second). Each physics hit deals
 1 damage; three hits remove the enemy. Missed kunai expire after 3 seconds.
-Player placement, waves, and win/loss logic are not implemented yet. The original
+Costs, tower selection, waves, and win/loss logic are not implemented yet. The original
 starter `SampleScene` is also included.
 
 ## Open and run

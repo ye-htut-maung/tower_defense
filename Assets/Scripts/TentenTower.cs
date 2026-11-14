@@ -11,6 +11,11 @@ public class TentenTower : MonoBehaviour
 
     private float nextShotTime;
 
+    public void SetTarget(EnemyHealth enemy)
+    {
+        target = enemy;
+    }
+
     private void OnEnable()
     {
         nextShotTime = 0f;
