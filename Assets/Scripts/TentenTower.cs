@@ -24,6 +24,24 @@ public class TentenTower : MonoBehaviour
     private void Update()
     {
         if (target == null || target.CurrentHealth <= 0 ||
+            Vector2.Distance(new Vector2(transform.position.x, transform.position.z),
+                new Vector2(target.transform.position.x, target.transform.position.z)) > attackRange)
+        {
+            target = null;
+            float closest = attackRange * attackRange;
+            foreach (EnemyHealth candidate in FindObjectsByType<EnemyHealth>())
+            {
+                Vector3 offset = candidate.transform.position - transform.position;
+                offset.y = 0f;
+                if (candidate.CurrentHealth > 0 && offset.sqrMagnitude <= closest)
+                {
+                    closest = offset.sqrMagnitude;
+                    target = candidate;
+                }
+            }
+        }
+
+        if (target == null || target.CurrentHealth <= 0 ||
             throwPoint == null || kunaiPrefab == null)
         {
             return;

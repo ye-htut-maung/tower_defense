@@ -3,18 +3,23 @@
 Unity project using Unity **6000.6.0f1** and the Universal Render Pipeline (URP).
 The current map is **Hidden Leaf Forest Road** in `Assets/Scenes/Main.unity`.
 It contains a primitive road, six enemy waypoints, a spawn marker, a gate
-placeholder, and six tower pads. One magenta capsule follows the waypoints at
-4 units per second toward the gate. Select `Placeholder Enemy` to change its
-movement speed in the Inspector. It starts with 3 health; `EnemyHealth.TakeDamage`
+placeholder, and six tower pads. Magenta enemies follow the waypoints at
+4 units per second toward the gate. Select `Assets/Prefabs/Enemy.prefab` to change their
+movement speed in the Inspector. Each starts with 3 health; `EnemyHealth.TakeDamage`
 subtracts health and removes the enemy at zero.
 
 All six pads start empty. In Play Mode, left-click an empty pad to place Tenten.
 Each pad accepts one tower; clicking occupied pads, road, or ground does nothing.
-Place Tenten on Pad3 early in the run to defeat the moving enemy with three hits.
+Place Tenten before clicking **Start Wave**. One wave spawns three enemies, two
+seconds apart. Try towers on Pads 1, 2, and 3 to defend the upper road.
+**Victory** appears only when all three enemies have spawned and been defeated;
+any enemy reaching the gate immediately causes **Defeat**. The result stays fixed
+and the round stops. **Restart** removes towers, enemies, and kunai, clears the
+pads, and returns to the initial setup so you can place towers and try again.
 Select `Assets/Prefabs/TentenTower.prefab` to tune attack range (5.5 units), time between
 shots (0.9 seconds), and projectile speed (10 units/second). Each physics hit deals
 1 damage; three hits remove the enemy. Missed kunai expire after 3 seconds.
-Costs, tower selection, waves, and win/loss logic are not implemented yet. The original
+Costs, tower selection, and additional waves are not implemented yet. The original
 starter `SampleScene` is also included.
 
 ## Open and run

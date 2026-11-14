@@ -7,6 +7,7 @@ public class EnemyHealth : MonoBehaviour
 
     public int MaxHealth => maxHealth;
     public int CurrentHealth { get; private set; }
+    public event System.Action<EnemyHealth> Defeated;
 
     private void Awake()
     {
@@ -25,6 +26,7 @@ public class EnemyHealth : MonoBehaviour
 
         if (CurrentHealth == 0)
         {
+            Defeated?.Invoke(this);
             Destroy(gameObject);
         }
     }

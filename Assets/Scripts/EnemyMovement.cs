@@ -8,6 +8,12 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField, Min(0f)] private float heightOffset = 1.1f;
 
     private int targetIndex;
+    public event System.Action ReachedGate;
+
+    public void SetRoute(Transform[] route)
+    {
+        waypoints = route;
+    }
 
     private void Start()
     {
@@ -48,6 +54,10 @@ public class EnemyMovement : MonoBehaviour
         {
             transform.position = target;
             targetIndex++;
+            if (targetIndex == waypoints.Length)
+            {
+                ReachedGate?.Invoke();
+            }
         }
     }
 }

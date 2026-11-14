@@ -7,10 +7,15 @@ public class TowerPlacement : MonoBehaviour
     [SerializeField] private Camera gameCamera;
     [SerializeField] private Transform towerPads;
     [SerializeField] private TentenTower towerPrefab;
-    [SerializeField] private EnemyHealth enemy;
+    [SerializeField] private RoundController round;
 
     private readonly HashSet<Transform> occupiedPads = new HashSet<Transform>();
     private InputAction placeAction;
+
+    public void ResetPlacement()
+    {
+        occupiedPads.Clear();
+    }
 
     private void OnEnable()
     {
@@ -40,7 +45,7 @@ public class TowerPlacement : MonoBehaviour
 
     private void PlaceAtScreenPosition(Vector2 screenPosition)
     {
-        if (gameCamera == null || towerPads == null || towerPrefab == null ||
+        if ((round != null && round.HasEnded) || gameCamera == null || towerPads == null || towerPrefab == null ||
             !Physics.Raycast(gameCamera.ScreenPointToRay(screenPosition), out RaycastHit hit))
         {
             return;
@@ -71,7 +76,6 @@ public class TowerPlacement : MonoBehaviour
         Vector3 position = new Vector3(pad.position.x, top, pad.position.z);
         TentenTower tower = Instantiate(towerPrefab, position, Quaternion.identity);
         tower.transform.SetParent(pad, true);
-        tower.SetTarget(enemy);
         occupiedPads.Add(pad);
     }
 }
