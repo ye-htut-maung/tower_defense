@@ -1,8 +1,10 @@
 # Tower Defense
 
 Unity project using Unity **6000.6.0f1** and the Universal Render Pipeline (URP).
-The current project contains the starter `SampleScene`; tower-defense gameplay
-has not been implemented yet.
+The current map is **Hidden Leaf Forest Road** in `Assets/Scenes/Main.unity`.
+It contains a primitive road, six enemy waypoints, a spawn marker, a gate
+placeholder, and six tower pads. Tower-defense gameplay has not been implemented
+yet. The original starter `SampleScene` is also included.
 
 ## Open and run
 
@@ -13,7 +15,7 @@ has not been implemented yet.
    `Assets`, `Packages`, and `ProjectSettings`.
 4. Open the project. Allow Unity to download packages and finish importing assets
    and compiling scripts. Internet access is needed for the first package restore.
-5. Open `Assets/Scenes/SampleScene.unity` and press **Play** in the Editor.
+5. Open `Assets/Scenes/Main.unity` and press **Play** in the Editor.
 
 Unity Hub may ask you to sign in and activate an appropriate Unity license.
 Codex, Unity MCP, and the Unity CLI are not required to open or run the scene.
