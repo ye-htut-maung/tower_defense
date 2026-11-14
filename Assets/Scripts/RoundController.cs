@@ -17,8 +17,20 @@ public class RoundController : MonoBehaviour
     [SerializeField] private Text placementMessage;
 
     public const int TentenCost = 50;
+    public const int ChuninUpgradeCost = 60;
     public int Ryo { get; private set; } = 100;
     public bool CanAffordTenten => Ryo >= TentenCost;
+    public bool CanManageTowers => State == RoundState.Ready || State == RoundState.Running;
+    public event System.Action RyoChanged;
+
+    public bool TryPayForChuninUpgrade()
+    {
+        if (!CanManageTowers || Ryo < ChuninUpgradeCost) return false;
+        Ryo -= ChuninUpgradeCost;
+        placementMessage.text = "";
+        RefreshUI();
+        return true;
+    }
 
     public void ShowInsufficientRyo()
     {
@@ -27,7 +39,7 @@ public class RoundController : MonoBehaviour
 
     public bool TryPayForTenten()
     {
-        if (State != RoundState.Ready || !CanAffordTenten) return false;
+        if (!CanManageTowers || !CanAffordTenten) return false;
         Ryo -= TentenCost;
         placementMessage.text = "";
         RefreshUI();
@@ -36,7 +48,7 @@ public class RoundController : MonoBehaviour
 
     public void RefundTentenSale()
     {
-        if (State != RoundState.Ready) return;
+        if (!CanManageTowers) return;
         Ryo += TowerPlacement.SellRefund;
         placementMessage.text = "";
         RefreshUI();
@@ -78,7 +90,6 @@ public class RoundController : MonoBehaviour
     public void StartWave()
     {
         if (State != RoundState.Ready) return;
-        placement.ClearSelection();
         SpawnedCount = 0;
         DefeatedCount = 0;
         State = RoundState.Running;
@@ -173,5 +184,6 @@ public class RoundController : MonoBehaviour
         string wave = $"Wave {CurrentWaveNumber} of {WaveCount}";
         statusText.text = State == RoundState.Ready ? $"{wave}  |  Place Tenten, then Start Wave" :
             HasEnded ? $"{State}  |  {wave}" : $"{wave}  |  Spawned {SpawnedCount}/{CurrentWaveSize}  |  Defeated {DefeatedCount}/{CurrentWaveSize}";
+        RyoChanged?.Invoke();
     }
 }

@@ -8,6 +8,18 @@ public class TentenTower : MonoBehaviour
     [SerializeField, Min(0.1f)] private float attackRange = 5.5f;
     [SerializeField, Min(0.05f)] private float timeBetweenShots = 0.9f;
     [SerializeField, Min(0.1f)] private float projectileSpeed = 10f;
+    [SerializeField] private Renderer accentRenderer;
+    [SerializeField] private Material chuninAccent;
+
+    public bool IsChunin { get; private set; }
+    public int DamagePerHit => IsChunin ? 2 : 1;
+
+    public void UpgradeToChunin()
+    {
+        if (IsChunin) return;
+        IsChunin = true;
+        accentRenderer.sharedMaterial = chuninAccent;
+    }
 
     private float nextShotTime;
     public float AttackRange => attackRange;
@@ -66,7 +78,7 @@ public class TentenTower : MonoBehaviour
         }
 
         KunaiProjectile kunai = Instantiate(kunaiPrefab, throwPoint.position, transform.rotation);
-        kunai.Initialize(target, Mathf.Max(0.1f, projectileSpeed));
+        kunai.Initialize(target, Mathf.Max(0.1f, projectileSpeed), DamagePerHit);
         nextShotTime = Time.time + Mathf.Max(0.05f, timeBetweenShots);
     }
 

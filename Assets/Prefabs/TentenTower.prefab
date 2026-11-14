@@ -994,6 +994,8 @@ MonoBehaviour:
   attackRange: 5.5
   timeBetweenShots: 0.9
   projectileSpeed: 10
+  accentRenderer: {fileID: 6846030327987692099}
+  chuninAccent: {fileID: 2100000, guid: 6c72b46ae149d4e3d875edd704aa7000, type: 2}
 --- !u!1 &7182936750945368041
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,13 +9,13 @@ movement speed in the Inspector. Each starts with 3 health; `EnemyHealth.TakeDam
 subtracts health and removes the enemy at zero.
 
 Enemies have small camera-facing health bars. Bars are hidden at full health;
-kunai hits reveal a two-thirds bar at 2 HP and a one-third bar at 1 HP. Each bar
+Genin kunai hits reveal a two-thirds bar at 2 HP and a one-third bar at 1 HP. Each bar
 follows its enemy and is removed on defeat or Restart. Bars do not block clicks.
 To fit a future model, adjust **Vertical Offset** on the **Enemy Health Bar**
 component in `Assets/Prefabs/Enemy.prefab` (default: 1.25 world units above the
 enemy's origin).
 
-All six pads start empty. Before Wave 1 or between waves, left-click a pad to
+All six pads start empty. Before, during, or between waves, left-click a pad to
 select it. The highlighted pad shows a shared tower panel and a map preview of
 Tenten's actual attack range. Tenten is the only tower choice for now.
 
@@ -24,19 +24,32 @@ On an empty pad, the panel shows **Genin Tenten**, **Ranged physical damage**, a
 panel without spending anything. Deploy is disabled with **Not enough Ryo.**
 when the balance is below 50. Each pad accepts one tower.
 
-On an occupied pad, choose **Sell for 35 Ryo**, then **Confirm Sale** to remove
+On an occupied Genin pad, **Upgrade - 60 Ryo** opens a confirmation showing
+the cost and the change from **1 to 2 physical damage per hit**. **Confirm Upgrade**
+charges 60 Ryo once and upgrades that tower on its existing pad. Cancel spends
+nothing; the upgrade is disabled with **Not enough Ryo.** below 60 Ryo.
+Chunin Tenten has a blue tunic accent and is marked **Highest tier** in the panel.
+Her range and fire rate stay the same. Only her newly fired kunai deal 2 damage;
+other Genin towers and already airborne kunai retain their original damage.
+Chunin's first hit leaves a fresh 3-HP enemy at 1 HP (one-third bar); the second
+defeats it. Upgrading is available before, during, and between waves when funds permit.
+
+On any occupied pad, choose **Sell for 35 Ryo**, then **Confirm Sale** to remove
 the tower and receive one 35-Ryo refund. Canceling keeps the tower and balance.
 The freed pad can be used again when you can afford deployment. UI clicks do not
-select pads behind the panel. Deploying and selling are locked during waves and
-after the round ends. Wave start, round end, and Restart clear the panel,
-selection highlight, range preview, and pending sale confirmation.
+select pads behind the panel. Waves keep running while the panel is open.
+Enemy rewards immediately refresh Deploy/Upgrade affordability without requiring
+reselection or dismissing a pending confirmation. Selling refunds 35 Ryo once
+and frees the pad immediately, including during combat. Victory and Defeat close
+the panel, clear the range preview, and block all tower changes. Restart also
+clears selection, highlighting, and pending sale/upgrade confirmations.
 
 Place Tenten before clicking **Start Wave**. Forest Road has **three waves** of
 **3, 5, and 7 enemies**, each spawning two seconds apart by default. Select
 `Round Controller` in the scene to configure each wave's enemy count and spawn
 interval in the Inspector. The HUD shows **Wave 1 of 3** and advances as waves clear.
 Each wave waits for a manual Start Wave click; repeated clicks cannot overlap
-waves. Place more towers between waves using the preserved towers and Ryo.
+waves. Place, sell, or upgrade towers during and between waves using your Ryo.
 Each round starts with **100 Ryo**; deploying Tenten costs **50 Ryo**.
 The HUD shows both the current balance and deployment cost. Try towers on Pads
 2 and 3 to win with the starting budget. Each defeated enemy awards **20 Ryo**
@@ -46,10 +59,10 @@ Each wave clears only after all its enemies have spawned and been defeated.
 **Victory** appears only after Wave 3 clears;
 any enemy reaching the gate immediately causes **Defeat**. The result stays fixed
 and the round stops. **Restart** removes towers, enemies, and kunai, clears the
-pads, restores 100 Ryo, and returns to Wave 1 so you can try again.
+pads, clears all upgrades, restores 100 Ryo, and returns to Wave 1 so you can try again.
 Select `Assets/Prefabs/TentenTower.prefab` to tune attack range (5.5 units), time between
 shots (0.9 seconds), and projectile speed (10 units/second). Each physics hit deals
-1 physical damage; three hits remove the enemy. Missed kunai expire after 3 seconds.
+1 physical damage for Genin or 2 for Chunin. Missed kunai expire after 3 seconds.
 The original starter `SampleScene` is also included.
 
 ## Open and run

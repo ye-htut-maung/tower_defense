@@ -11,6 +11,7 @@ public class KunaiProjectile : MonoBehaviour
     private Vector3 direction;
     private float speed;
     private bool hasHit;
+    public int Damage { get; private set; } = 1;
 
     private void Awake()
     {
@@ -24,10 +25,11 @@ public class KunaiProjectile : MonoBehaviour
         Destroy(gameObject, Lifetime);
     }
 
-    public void Initialize(EnemyHealth enemy, float movementSpeed)
+    public void Initialize(EnemyHealth enemy, float movementSpeed, int damage = 1)
     {
         target = enemy;
         speed = movementSpeed;
+        Damage = Mathf.Max(1, damage);
     }
 
     private void FixedUpdate()
@@ -85,7 +87,7 @@ public class KunaiProjectile : MonoBehaviour
         hasHit = true;
         hitCollider.enabled = false;
         body.detectCollisions = false;
-        enemy.TakeDamage(1);
+        enemy.TakeDamage(Damage);
         Destroy(gameObject);
         return true;
     }

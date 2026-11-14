@@ -15,7 +15,7 @@ public class TowerPlacement : MonoBehaviour
     [SerializeField] private string damageDescription = "Ranged physical damage";
 
     public const int SellRefund = 35;
-    private enum SelectionMode { None, Empty, Occupied, ConfirmSale }
+    private enum SelectionMode { None, Empty, Occupied, ConfirmSale, ConfirmUpgrade }
     private SelectionMode mode;
     private Transform selectedPad;
     private TentenTower selectedTower;
@@ -23,7 +23,7 @@ public class TowerPlacement : MonoBehaviour
     private LineRenderer rangePreview;
     private LineRenderer selectionHighlight;
     private readonly List<RaycastResult> uiHits = new List<RaycastResult>();
-    private bool CanManage => round != null && round.State == RoundController.RoundState.Ready;
+    private bool CanManage => round != null && round.CanManageTowers;
 
     public void ResetPlacement() => ClearSelection();
 
@@ -31,8 +31,10 @@ public class TowerPlacement : MonoBehaviour
     {
         panel.DeployRequested += Deploy;
         panel.SellRequested += AskToSell;
-        panel.ConfirmRequested += ConfirmSale;
+        panel.ConfirmRequested += ConfirmAction;
+        panel.UpgradeRequested += AskToUpgrade;
         panel.CancelRequested += ClearSelection;
+        round.RyoChanged += RefreshAffordability;
         placeAction = new InputAction("Select tower pad", InputActionType.Button, "<Mouse>/leftButton");
         placeAction.performed += OnPlace;
         placeAction.Enable();
@@ -48,8 +50,10 @@ public class TowerPlacement : MonoBehaviour
         }
         panel.DeployRequested -= Deploy;
         panel.SellRequested -= AskToSell;
-        panel.ConfirmRequested -= ConfirmSale;
+        panel.ConfirmRequested -= ConfirmAction;
+        panel.UpgradeRequested -= AskToUpgrade;
         panel.CancelRequested -= ClearSelection;
+        round.RyoChanged -= RefreshAffordability;
         ClearSelection();
     }
 
@@ -78,8 +82,10 @@ public class TowerPlacement : MonoBehaviour
         selectedPad = pad;
         selectedTower = pad.GetComponentInChildren<TentenTower>();
         mode = selectedTower == null ? SelectionMode.Empty : SelectionMode.Occupied;
-        panel.Show(towerName, damageDescription, mode == SelectionMode.Empty,
-            RoundController.TentenCost, SellRefund, round.CanAffordTenten);
+        panel.Show(selectedTower != null && selectedTower.IsChunin ? "Chunin Tenten" : towerName,
+            selectedTower != null ? $"{damageDescription} ({selectedTower.DamagePerHit} per hit)" : damageDescription,
+            mode == SelectionMode.Empty, RoundController.TentenCost, SellRefund, round.CanAffordTenten,
+            selectedTower != null && selectedTower.IsChunin, round.Ryo >= RoundController.ChuninUpgradeCost);
         DrawCircle(ref selectionHighlight, "Selected Pad", pad.position, 1.05f,
             new Color(1f, .8f, .2f), .08f);
         DrawCircle(ref rangePreview, "Attack Range Preview", pad.position,
@@ -155,6 +161,27 @@ public class TowerPlacement : MonoBehaviour
         round.RefundTentenSale();
     }
 
+    private void AskToUpgrade()
+    {
+        if (!CanManage || mode != SelectionMode.Occupied || selectedTower == null ||
+            selectedTower.IsChunin || round.Ryo < RoundController.ChuninUpgradeCost) return;
+        mode = SelectionMode.ConfirmUpgrade;
+        panel.AskToConfirmUpgrade();
+    }
+
+    private void ConfirmAction()
+    {
+        if (mode == SelectionMode.ConfirmSale)
+        {
+            ConfirmSale();
+            return;
+        }
+        if (!CanManage || mode != SelectionMode.ConfirmUpgrade || selectedTower == null ||
+            selectedTower.IsChunin || !round.TryPayForChuninUpgrade()) return;
+        selectedTower.UpgradeToChunin();
+        ClearSelection();
+    }
+
     public void ClearSelection()
     {
         mode = SelectionMode.None;
@@ -163,5 +190,12 @@ public class TowerPlacement : MonoBehaviour
         if (panel != null) panel.Hide();
         if (rangePreview != null) rangePreview.gameObject.SetActive(false);
         if (selectionHighlight != null) selectionHighlight.gameObject.SetActive(false);
+    }
+
+    private void RefreshAffordability()
+    {
+        if (!CanManage) ClearSelection();
+        else panel.UpdateAffordability(round.CanAffordTenten,
+            round.Ryo >= RoundController.ChuninUpgradeCost);
     }
 }
