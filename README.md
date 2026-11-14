@@ -8,6 +8,13 @@ placeholder, and six tower pads. Magenta enemies follow the waypoints at
 movement speed in the Inspector. Each starts with 3 health; `EnemyHealth.TakeDamage`
 subtracts health and removes the enemy at zero.
 
+Enemies have small camera-facing health bars. Bars are hidden at full health;
+kunai hits reveal a two-thirds bar at 2 HP and a one-third bar at 1 HP. Each bar
+follows its enemy and is removed on defeat or Restart. Bars do not block clicks.
+To fit a future model, adjust **Vertical Offset** on the **Enemy Health Bar**
+component in `Assets/Prefabs/Enemy.prefab` (default: 1.25 world units above the
+enemy's origin).
+
 All six pads start empty. Before Wave 1 or between waves, left-click a pad to
 select it. The highlighted pad shows a shared tower panel and a map preview of
 Tenten's actual attack range. Tenten is the only tower choice for now.
