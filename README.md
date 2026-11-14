@@ -4,10 +4,16 @@ Unity project using Unity **6000.6.0f1** and the Universal Render Pipeline (URP)
 The current map is **Hidden Leaf Forest Road** in `Assets/Scenes/Main.unity`.
 It contains a primitive road, six enemy waypoints, a spawn marker, a gate
 placeholder, and six tower pads. One magenta capsule follows the waypoints at
-4 units per second and stops at the gate. Select `Placeholder Enemy` to change
-its movement speed in the Inspector. It starts with 3 health; `EnemyHealth.TakeDamage`
-subtracts health and removes the enemy at zero. Spawning, combat, and win/loss logic
-are not implemented yet. The original starter `SampleScene` is also included.
+4 units per second toward the gate. Select `Placeholder Enemy` to change its
+movement speed in the Inspector. It starts with 3 health; `EnemyHealth.TakeDamage`
+subtracts health and removes the enemy at zero.
+
+One preplaced `Tenten Tower` on `Pad3` throws visible kunai at the enemy in range.
+Select `TowerPads/Pad3/Tenten Tower` to tune attack range (5.5 units), time between
+shots (0.9 seconds), and projectile speed (10 units/second). Each physics hit deals
+1 damage; three hits remove the enemy. Missed kunai expire after 3 seconds.
+Player placement, waves, and win/loss logic are not implemented yet. The original
+starter `SampleScene` is also included.
 
 ## Open and run
 
