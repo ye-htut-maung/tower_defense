@@ -8,8 +8,22 @@ placeholder, and six tower pads. Magenta enemies follow the waypoints at
 movement speed in the Inspector. Each starts with 3 health; `EnemyHealth.TakeDamage`
 subtracts health and removes the enemy at zero.
 
-All six pads start empty. In Play Mode, left-click an empty pad to place Tenten.
-Each pad accepts one tower; clicking occupied pads, road, or ground does nothing.
+All six pads start empty. Before Wave 1 or between waves, left-click a pad to
+select it. The highlighted pad shows a shared tower panel and a map preview of
+Tenten's actual attack range. Tenten is the only tower choice for now.
+
+On an empty pad, the panel shows **Genin Tenten**, **Ranged physical damage**, and
+**50 Ryo**. **Deploy** places one tower and charges once; **Cancel** closes the
+panel without spending anything. Deploy is disabled with **Not enough Ryo.**
+when the balance is below 50. Each pad accepts one tower.
+
+On an occupied pad, choose **Sell for 35 Ryo**, then **Confirm Sale** to remove
+the tower and receive one 35-Ryo refund. Canceling keeps the tower and balance.
+The freed pad can be used again when you can afford deployment. UI clicks do not
+select pads behind the panel. Deploying and selling are locked during waves and
+after the round ends. Wave start, round end, and Restart clear the panel,
+selection highlight, range preview, and pending sale confirmation.
+
 Place Tenten before clicking **Start Wave**. Forest Road has **three waves** of
 **3, 5, and 7 enemies**, each spawning two seconds apart by default. Select
 `Round Controller` in the scene to configure each wave's enemy count and spawn
@@ -19,9 +33,8 @@ waves. Place more towers between waves using the preserved towers and Ryo.
 Each round starts with **100 Ryo**; deploying Tenten costs **50 Ryo**.
 The HUD shows both the current balance and deployment cost. Try towers on Pads
 2 and 3 to win with the starting budget. Each defeated enemy awards **20 Ryo**
-once during the wave. Gate arrivals award nothing. Unaffordable placements leave
-the pad empty and show **Not enough Ryo.** Occupied-pad, road, and ground clicks
-spend nothing.
+once during the wave. Gate arrivals award nothing. Selecting pads, clicking road
+or ground, and canceling panel actions spend nothing.
 Each wave clears only after all its enemies have spawned and been defeated.
 **Victory** appears only after Wave 3 clears;
 any enemy reaching the gate immediately causes **Defeat**. The result stays fixed
@@ -30,8 +43,7 @@ pads, restores 100 Ryo, and returns to Wave 1 so you can try again.
 Select `Assets/Prefabs/TentenTower.prefab` to tune attack range (5.5 units), time between
 shots (0.9 seconds), and projectile speed (10 units/second). Each physics hit deals
 1 physical damage; three hits remove the enemy. Missed kunai expire after 3 seconds.
-Tower selection is not implemented yet. The original
-starter `SampleScene` is also included.
+The original starter `SampleScene` is also included.
 
 ## Open and run
 

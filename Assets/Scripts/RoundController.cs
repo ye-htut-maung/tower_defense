@@ -27,11 +27,19 @@ public class RoundController : MonoBehaviour
 
     public bool TryPayForTenten()
     {
-        if (HasEnded || !CanAffordTenten) return false;
+        if (State != RoundState.Ready || !CanAffordTenten) return false;
         Ryo -= TentenCost;
         placementMessage.text = "";
         RefreshUI();
         return true;
+    }
+
+    public void RefundTentenSale()
+    {
+        if (State != RoundState.Ready) return;
+        Ryo += TowerPlacement.SellRefund;
+        placementMessage.text = "";
+        RefreshUI();
     }
 
     [System.Serializable]
@@ -70,6 +78,7 @@ public class RoundController : MonoBehaviour
     public void StartWave()
     {
         if (State != RoundState.Ready) return;
+        placement.ClearSelection();
         SpawnedCount = 0;
         DefeatedCount = 0;
         State = RoundState.Running;
@@ -126,6 +135,7 @@ public class RoundController : MonoBehaviour
     {
         if (State != RoundState.Running) return;
         State = result;
+        placement.ClearSelection();
         foreach (EnemyHealth enemy in enemies)
             if (enemy != null) enemy.GetComponent<EnemyMovement>().enabled = false;
         foreach (TentenTower tower in FindObjectsByType<TentenTower>()) tower.enabled = false;

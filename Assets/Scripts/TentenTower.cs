@@ -10,6 +10,7 @@ public class TentenTower : MonoBehaviour
     [SerializeField, Min(0.1f)] private float projectileSpeed = 10f;
 
     private float nextShotTime;
+    public float AttackRange => attackRange;
 
     public void SetTarget(EnemyHealth enemy)
     {
