@@ -8,6 +8,7 @@ public class RoundController : MonoBehaviour
     public enum RoundState { Ready, Running, Victory, Defeat }
 
     [SerializeField] private EnemyHealth enemyPrefab;
+    [SerializeField] private EnemyHealth toughEnemyPrefab;
     [SerializeField] private Transform[] route;
     [SerializeField] private TowerPlacement placement;
     [SerializeField] private Button startButton;
@@ -57,18 +58,30 @@ public class RoundController : MonoBehaviour
     [System.Serializable]
     public class WaveSettings
     {
-        [Min(1)] public int enemyCount = 3;
+        public EnemyType[] spawnOrder;
         [Min(0.1f)] public float spawnInterval = 2f;
 
-        public WaveSettings(int count) { enemyCount = count; }
+        public WaveSettings(float interval, params EnemyType[] order)
+        {
+            spawnInterval = interval;
+            spawnOrder = order;
+        }
     }
 
+    public enum EnemyType { Regular, Tough }
+
     [SerializeField] private WaveSettings[] waves =
-        { new WaveSettings(3), new WaveSettings(5), new WaveSettings(7) };
+    {
+        new WaveSettings(2f, EnemyType.Regular, EnemyType.Regular, EnemyType.Regular),
+        new WaveSettings(1.6f, EnemyType.Regular, EnemyType.Regular, EnemyType.Tough,
+            EnemyType.Regular, EnemyType.Regular),
+        new WaveSettings(1.2f, EnemyType.Regular, EnemyType.Regular, EnemyType.Tough,
+            EnemyType.Regular, EnemyType.Regular, EnemyType.Tough, EnemyType.Regular)
+    };
     private int waveIndex;
     public int CurrentWaveNumber => waveIndex + 1;
     public int WaveCount => waves.Length;
-    public int CurrentWaveSize => Mathf.Max(1, waves[waveIndex].enemyCount);
+    public int CurrentWaveSize => waves[waveIndex].spawnOrder.Length;
     private readonly List<EnemyHealth> enemies = new List<EnemyHealth>();
     private float nextSpawnTime;
 
@@ -105,7 +118,10 @@ public class RoundController : MonoBehaviour
 
     private void SpawnEnemy()
     {
-        EnemyHealth enemy = Instantiate(enemyPrefab, route[0].position, Quaternion.identity);
+        EnemyType type = waves[waveIndex].spawnOrder[SpawnedCount];
+        EnemyHealth enemy = Instantiate(type == EnemyType.Tough ? toughEnemyPrefab : enemyPrefab,
+            route[0].position, Quaternion.identity);
+        enemy.name = type == EnemyType.Tough ? "Tough Enemy" : "Regular Enemy";
         enemy.GetComponent<EnemyMovement>().SetRoute(route);
         enemy.Defeated += OnDefeated;
         enemy.GetComponent<EnemyMovement>().ReachedGate += OnReachedGate;

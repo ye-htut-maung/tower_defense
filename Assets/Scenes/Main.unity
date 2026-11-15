@@ -3121,6 +3121,7 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::RoundController
   enemyPrefab: {fileID: 1012348692325939777, guid: e5cfa2194a09e4aa8af35b4517a3320c, type: 3}
+  toughEnemyPrefab: {fileID: 2529391794120589700, guid: cf7360393bdbc483da1f20db72e6a603, type: 3}
   route:
   - {fileID: 573980878}
   - {fileID: 1431609476}
@@ -3135,12 +3136,12 @@ MonoBehaviour:
   ryoText: {fileID: 1035140206}
   placementMessage: {fileID: 422936572}
   waves:
-  - enemyCount: 3
+  - spawnOrder: 000000000000000000000000i
     spawnInterval: 2
-  - enemyCount: 5
-    spawnInterval: 2
-  - enemyCount: 7
-    spawnInterval: 2
+  - spawnOrder: 0000000000000000010000000000000000000000i
+    spawnInterval: 1.6
+  - spawnOrder: 00000000000000000100000000000000000000000100000000000000i
+    spawnInterval: 1.2
 --- !u!4 &663335058
 Transform:
   m_ObjectHideFlags: 0

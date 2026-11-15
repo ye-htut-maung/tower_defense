@@ -3,13 +3,16 @@
 Unity project using Unity **6000.6.0f1** and the Universal Render Pipeline (URP).
 The current map is **Hidden Leaf Forest Road** in `Assets/Scenes/Main.unity`.
 It contains a primitive road, six enemy waypoints, a spawn marker, a gate
-placeholder, and six tower pads. Magenta enemies follow the waypoints at
-4 units per second toward the gate. Select `Assets/Prefabs/Enemy.prefab` to change their
-movement speed in the Inspector. Each starts with 3 health; `EnemyHealth.TakeDamage`
-subtracts health and removes the enemy at zero.
+placeholder, and six tower pads. Regular enemies are magenta with **3 HP**;
+tough enemies are orange with **6 HP**. Both follow the same waypoints at
+**4 units/second** and award **20 Ryo** when defeated. `Assets/Prefabs/Enemy.prefab`
+is the regular enemy; `Assets/Prefabs/ToughEnemy.prefab` is its tough variant.
+`EnemyHealth.TakeDamage` subtracts health and removes the enemy at zero.
 
 Enemies have small camera-facing health bars. Bars are hidden at full health;
-Genin kunai hits reveal a two-thirds bar at 2 HP and a one-third bar at 1 HP. Each bar
+Regular enemies show a two-thirds bar at 2 HP and a one-third bar at 1 HP. Tough
+enemies use the same bar divided by their 6-HP maximum: three Chunin hits take
+them through **6 -> 4 -> 2 -> defeated**, showing 4/6 then 2/6. Each bar
 follows its enemy and is removed on defeat or Restart. Bars do not block clicks.
 To fit a future model, adjust **Vertical Offset** on the **Enemy Health Bar**
 component in `Assets/Prefabs/Enemy.prefab` (default: 1.25 world units above the
@@ -44,10 +47,18 @@ and frees the pad immediately, including during combat. Victory and Defeat close
 the panel, clear the range preview, and block all tower changes. Restart also
 clears selection, highlighting, and pending sale/upgrade confirmations.
 
-Place Tenten before clicking **Start Wave**. Forest Road has **three waves** of
-**3, 5, and 7 enemies**, each spawning two seconds apart by default. Select
-`Round Controller` in the scene to configure each wave's enemy count and spawn
-interval in the Inspector. The HUD shows **Wave 1 of 3** and advances as waves clear.
+Place Tenten before clicking **Start Wave**. Forest Road has **three waves**.
+Here, **R** means regular (3 HP) and **T** means tough (6 HP):
+
+| Wave | Spawn order | Interval |
+| --- | --- | --- |
+| 1 | R, R, R | 2.0 seconds |
+| 2 | R, R, T, R, R | 1.6 seconds |
+| 3 | R, R, T, R, R, T, R | 1.2 seconds |
+
+Select `Round Controller` to edit each wave's **Spawn Order** dropdown list and
+**Spawn Interval** in the Inspector. List length determines enemy count. The HUD
+shows **Wave 1 of 3** and advances as waves clear.
 Each wave waits for a manual Start Wave click; repeated clicks cannot overlap
 waves. Place, sell, or upgrade towers during and between waves using your Ryo.
 Each round starts with **100 Ryo**; deploying Tenten costs **50 Ryo**.
@@ -64,6 +75,15 @@ Select `Assets/Prefabs/TentenTower.prefab` to tune attack range (5.5 units), tim
 shots (0.9 seconds), and projectile speed (10 units/second). Each physics hit deals
 1 physical damage for Genin or 2 for Chunin. Missed kunai expire after 3 seconds.
 The original starter `SampleScene` is also included.
+
+Verified winning sequence using the starting budget and normal rewards:
+
+1. Before Wave 1, deploy Genin on **Pads 2 and 3** (100 -> 0 Ryo), then Start Wave.
+   Clearing it leaves **60 Ryo**.
+2. Before Wave 2, upgrade **Pad 3** to Chunin and confirm (60 -> 0), then Start
+   Wave. Clearing it leaves **100 Ryo**.
+3. Before Wave 3, upgrade **Pad 2** to Chunin and confirm (100 -> 40), then Start
+   Wave. Leave both Chunin in place; this run won with **180 Ryo** remaining.
 
 ## Open and run
 
