@@ -41,9 +41,16 @@ when the balance is below the selected tower's price. Each pad accepts one tower
 
 Sasuke's indigo-shirt/spiky-hair placeholder is **0.5 world units taller** than
 Genin Tenten (2.29 versus 1.79 units). His glowing fireball sphere has a short
-trail, flies straight toward the enemy's position at firing time, and deals
-damage to one enemy once on 3D impact. It does not steer after launch and can miss
-moving enemies. Both projectile types expire after 3 seconds if they miss.
+trail and deals damage to one enemy once on 3D impact.
+
+Both Tenten and Sasuke use **predictive aiming**: the tower solves for the earliest
+reachable intercept using the enemy's current position, measured movement velocity,
+the actual launch point, and its projectile speed. Kunai and fireballs then fly
+**straight without homing**. A target that keeps its current velocity can be hit
+on a straight stretch; a turn after launch can still make a shot miss. Towers wait
+if no positive intercept within the projectile's lifetime is reachable. Both
+projectile types keep their existing damage/speeds and expire after **3 seconds**
+if they miss; physical impact still applies damage once.
 
 On an occupied **Genin Tenten** pad, **Upgrade - 60 Ryo** opens a confirmation showing
 the cost and the change from **1 to 2 physical damage per hit**. **Confirm Upgrade**

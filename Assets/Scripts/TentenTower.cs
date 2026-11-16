@@ -86,8 +86,17 @@ public class TentenTower : MonoBehaviour
             return;
         }
 
-        KunaiProjectile kunai = Instantiate(kunaiPrefab, throwPoint.position, transform.rotation);
-        kunai.Initialize(target, Mathf.Max(0.1f, projectileSpeed), DamagePerHit);
+        Vector3 velocity = target.TryGetComponent<EnemyMovement>(out var movement)
+            ? movement.Velocity : Vector3.zero;
+        float speed = Mathf.Max(0.1f, projectileSpeed);
+        Vector3 origin = throwPoint.position;
+        if (!ProjectileAiming.TryGetInterceptPoint(origin, target.transform.position,
+            velocity, speed, KunaiProjectile.Lifetime, out Vector3 intercept)) return;
+        Vector3 launchDirection = intercept - origin;
+        Quaternion launchRotation = launchDirection.sqrMagnitude > 0.0001f
+            ? Quaternion.LookRotation(launchDirection) : transform.rotation;
+        KunaiProjectile kunai = Instantiate(kunaiPrefab, origin, launchRotation);
+        kunai.Initialize(intercept, speed, DamagePerHit);
         nextShotTime = Time.time + Mathf.Max(0.05f, timeBetweenShots);
     }
 

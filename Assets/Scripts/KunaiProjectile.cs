@@ -4,15 +4,13 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody), typeof(SphereCollider))]
 public class KunaiProjectile : MonoBehaviour
 {
-    private const float Lifetime = 3f;
-    [SerializeField] private bool homing = true;
+    public const float Lifetime = 3f;
     [SerializeField] private DamageType damageType = DamageType.Physical;
     public DamageType DamageKind => damageType;
-    public bool IsHoming => homing;
+    public bool IsHoming => false;
 
     private Rigidbody body;
     private SphereCollider hitCollider;
-    private EnemyHealth target;
     private Vector3 direction;
     private float speed;
     private bool hasHit;
@@ -32,10 +30,15 @@ public class KunaiProjectile : MonoBehaviour
 
     public void Initialize(EnemyHealth enemy, float movementSpeed, int damage = 1)
     {
-        target = enemy;
+        Initialize(enemy != null ? enemy.transform.position : transform.position + transform.forward,
+            movementSpeed, damage);
+    }
+
+    public void Initialize(Vector3 aimPoint, float movementSpeed, int damage = 1)
+    {
         speed = movementSpeed;
         Damage = Mathf.Max(1, damage);
-        Vector3 offset = enemy != null ? enemy.transform.position - body.position : transform.forward;
+        Vector3 offset = aimPoint - body.position;
         if (offset.sqrMagnitude > 0.0001f) direction = offset.normalized;
     }
 
@@ -44,16 +47,6 @@ public class KunaiProjectile : MonoBehaviour
         if (hasHit)
         {
             return;
-        }
-
-        // Track the moving capsule; if it disappears, continue until expiry.
-        if (homing && target != null && target.CurrentHealth > 0)
-        {
-            Vector3 offset = target.transform.position - body.position;
-            if (offset.sqrMagnitude > 0.0001f)
-            {
-                direction = offset.normalized;
-            }
         }
 
         float distance = speed * Time.fixedDeltaTime;

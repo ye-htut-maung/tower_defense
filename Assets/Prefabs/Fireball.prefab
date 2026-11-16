@@ -97,7 +97,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1233cacb2025d4ed69097d09538c5b9b, type: 3}
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::KunaiProjectile
-  homing: 0
   damageType: 1
 --- !u!96 &8783334502338081966
 TrailRenderer:
