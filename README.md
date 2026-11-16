@@ -24,7 +24,9 @@ ninja's origin; the tough variant retains **1.25**). To prototype a future model
 replace primitives inside `Ninja Visual` while retaining its `EnemyVisualFacing`
 component and gameplay-root reference. Keep gameplay collision on the root.
 
-All six pads start empty. Before, during, or between waves, left-click a pad to
+All six pads start empty. The on-screen placement hint reads:
+**Click an empty pad, choose Tenten or Sasuke, then press Deploy.**
+Before, during, or between waves, left-click a pad to
 select it. The highlighted pad shows a shared tower panel and a map preview of
 the selected tower's actual attack range. Use the **Tenten** and **Sasuke** buttons
 on an empty pad to choose a tower before deploying.
@@ -112,6 +114,15 @@ Verified Tenten-only winning sequence using the starting budget and normal rewar
    Wave. Clearing it leaves **100 Ryo**.
 3. Before Wave 3, upgrade **Pad 2** to Chunin and confirm (100 -> 40), then Start
    Wave. Leave both Chunin in place; this run won with **180 Ryo** remaining.
+
+Step 17 replayed this complete strategy in Unity Play Mode on predictive-aiming
+commit `cc2e09c1`, before changing the hint. All three waves cleared, ending in
+**Victory with 180 Ryo** and zero Console errors or warnings. Gameplay stats and
+aiming were unchanged. After updating the hint, Game view at 1280x720 showed the
+complete sentence without clipping. Mouse-input checks deployed Tenten on Pad 3
+for 50 Ryo, then, after Restart, Sasuke on Pad 3 for 60 Ryo. The final Console
+had zero errors and one Unity AI Toolkit Account API timeout warning. Play Mode
+was exited and Main saved with empty pads.
 
 Verified mixed Wave 1: deploy Tenten on **Pad 3** (100 -> 50 Ryo), select empty
 **Pad 2**, choose **Sasuke**, then Start Wave with that panel open. After Tenten's

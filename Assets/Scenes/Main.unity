@@ -4408,7 +4408,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Wave 1 of 3  |  Place Tenten, then Start Wave
+  m_Text: Wave 1 of 3  |  Click an empty pad, choose Tenten or Sasuke, then press Deploy.
 --- !u!222 &1020541825
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4434,7 +4434,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -57}
-  m_SizeDelta: {x: 700, y: 32}
+  m_SizeDelta: {x: 1100, y: 32}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &1035140203
 GameObject:

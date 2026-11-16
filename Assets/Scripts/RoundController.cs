@@ -209,7 +209,7 @@ public class RoundController : MonoBehaviour
         startButton.interactable = State == RoundState.Ready;
         ryoText.text = $"Ryo: {Ryo}  |  Tenten: 50 Ryo  |  Sasuke: 60 Ryo";
         string wave = $"Wave {CurrentWaveNumber} of {WaveCount}";
-        statusText.text = State == RoundState.Ready ? $"{wave}  |  Place Tenten, then Start Wave" :
+        statusText.text = State == RoundState.Ready ? $"{wave}  |  Click an empty pad, choose Tenten or Sasuke, then press Deploy." :
             HasEnded ? $"{State}  |  {wave}" : $"{wave}  |  Spawned {SpawnedCount}/{CurrentWaveSize}  |  Defeated {DefeatedCount}/{CurrentWaveSize}";
         RyoChanged?.Invoke();
     }
