@@ -1,7 +1,16 @@
 using UnityEngine;
 
+// Shared ranged attack driver; prefab identity selects Tenten or Sasuke behavior.
 public class TentenTower : MonoBehaviour
 {
+    public enum TowerKind { Tenten, Sasuke }
+    [SerializeField] private TowerKind towerKind;
+    public bool IsSasuke => towerKind == TowerKind.Sasuke;
+    public bool SupportsUpgrade => !IsSasuke;
+    public int DeploymentCost => IsSasuke ? 60 : 50;
+    public int SellValue => Mathf.RoundToInt(DeploymentCost * 0.7f);
+    public string DisplayName => IsSasuke ? "Genin Sasuke" : IsChunin ? "Chunin Tenten" : "Genin Tenten";
+    public string AttackDescription => IsSasuke ? "Fire Style: Fireball Jutsu\n2 fire damage per hit" : $"Ranged physical damage ({DamagePerHit} per hit)";
     [SerializeField] private EnemyHealth target;
     [SerializeField] private Transform throwPoint;
     [SerializeField] private KunaiProjectile kunaiPrefab;
@@ -12,11 +21,11 @@ public class TentenTower : MonoBehaviour
     [SerializeField] private Material chuninAccent;
 
     public bool IsChunin { get; private set; }
-    public int DamagePerHit => IsChunin ? 2 : 1;
+    public int DamagePerHit => IsSasuke || IsChunin ? 2 : 1;
 
     public void UpgradeToChunin()
     {
-        if (IsChunin) return;
+        if (IsSasuke || IsChunin) return;
         IsChunin = true;
         accentRenderer.sharedMaterial = chuninAccent;
     }

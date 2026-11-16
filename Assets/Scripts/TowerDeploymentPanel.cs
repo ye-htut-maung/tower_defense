@@ -15,6 +15,9 @@ public class TowerDeploymentPanel : MonoBehaviour
     [SerializeField] private Button confirm;
     [SerializeField] private Button cancel;
     [SerializeField] private Button upgrade;
+    [SerializeField] private Button tentenChoice;
+    [SerializeField] private Button sasukeChoice;
+    public event Action<bool> ChoiceRequested;
 
     public event Action DeployRequested;
     public event Action SellRequested;
@@ -25,6 +28,7 @@ public class TowerDeploymentPanel : MonoBehaviour
     private bool showingHighestTier;
     private bool confirmingSale;
     private bool confirmingUpgrade;
+    private bool supportsUpgrade;
 
     private void Awake()
     {
@@ -33,29 +37,36 @@ public class TowerDeploymentPanel : MonoBehaviour
         confirm.onClick.AddListener(() => ConfirmRequested?.Invoke());
         cancel.onClick.AddListener(() => CancelRequested?.Invoke());
         upgrade.onClick.AddListener(() => UpgradeRequested?.Invoke());
+        tentenChoice.onClick.AddListener(() => ChoiceRequested?.Invoke(false));
+        sasukeChoice.onClick.AddListener(() => ChoiceRequested?.Invoke(true));
         Hide();
     }
 
     public void Show(string name, string details, bool empty, int cost, int refund, bool affordable,
-        bool highestTier = false, bool canUpgrade = false)
+        bool highestTier = false, bool canUpgrade = false, bool canUpgradeType = true, bool sasuke = false)
     {
         content.SetActive(true);
         showingEmpty = empty;
         showingHighestTier = highestTier;
+        supportsUpgrade = canUpgradeType;
+        tentenChoice.gameObject.SetActive(empty);
+        sasukeChoice.gameObject.SetActive(empty);
+        tentenChoice.interactable = sasuke;
+        sasukeChoice.interactable = !sasuke;
         confirmingSale = confirmingUpgrade = false;
         confirm.interactable = true;
         title.text = name;
         description.text = details;
-        price.text = empty ? $"{cost} Ryo" : highestTier ? "Highest tier" :
+        price.text = empty ? $"{cost} Ryo" : !supportsUpgrade ? $"Sell refund: {refund} Ryo" : highestTier ? "Highest tier" :
             $"{RoundController.ChuninUpgradeCost} Ryo upgrade\n1 to 2 physical damage per hit";
         message.text = empty ? (!affordable ? "Not enough Ryo." : "") :
-            highestTier ? "" : !canUpgrade ? "Not enough Ryo." : "";
+            highestTier || !supportsUpgrade ? "" : !canUpgrade ? "Not enough Ryo." : "";
         deploy.gameObject.SetActive(empty);
         deploy.interactable = affordable;
         sell.gameObject.SetActive(!empty);
         sell.GetComponentInChildren<Text>().text = $"Sell for {refund} Ryo";
         confirm.gameObject.SetActive(false);
-        upgrade.gameObject.SetActive(!empty && !highestTier);
+        upgrade.gameObject.SetActive(!empty && !highestTier && supportsUpgrade);
         upgrade.interactable = canUpgrade;
     }
 
@@ -98,7 +109,7 @@ public class TowerDeploymentPanel : MonoBehaviour
         if (confirmingUpgrade)
             message.text = canUpgrade ? "Upgrade to Chunin Tenten?" : "Not enough Ryo.";
         else
-            message.text = (showingEmpty ? !canDeploy : !showingHighestTier && !canUpgrade)
+            message.text = (showingEmpty ? !canDeploy : supportsUpgrade && !showingHighestTier && !canUpgrade)
                 ? "Not enough Ryo." : "";
     }
 }

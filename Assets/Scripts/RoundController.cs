@@ -21,6 +21,7 @@ public class RoundController : MonoBehaviour
     public const int ChuninUpgradeCost = 60;
     public int Ryo { get; private set; } = 100;
     public bool CanAffordTenten => Ryo >= TentenCost;
+    public bool CanAfford(int cost) => Ryo >= cost;
     public bool CanManageTowers => State == RoundState.Ready || State == RoundState.Running;
     public event System.Action RyoChanged;
 
@@ -40,8 +41,13 @@ public class RoundController : MonoBehaviour
 
     public bool TryPayForTenten()
     {
-        if (!CanManageTowers || !CanAffordTenten) return false;
-        Ryo -= TentenCost;
+        return TryPayDeployment(TentenCost);
+    }
+
+    public bool TryPayDeployment(int cost)
+    {
+        if (!CanManageTowers || cost <= 0 || !CanAfford(cost)) return false;
+        Ryo -= cost;
         placementMessage.text = "";
         RefreshUI();
         return true;
@@ -49,8 +55,13 @@ public class RoundController : MonoBehaviour
 
     public void RefundTentenSale()
     {
-        if (!CanManageTowers) return;
-        Ryo += TowerPlacement.SellRefund;
+        RefundTowerSale(TowerPlacement.SellRefund);
+    }
+
+    public void RefundTowerSale(int refund)
+    {
+        if (!CanManageTowers || refund <= 0) return;
+        Ryo += refund;
         placementMessage.text = "";
         RefreshUI();
     }
@@ -196,7 +207,7 @@ public class RoundController : MonoBehaviour
     private void RefreshUI()
     {
         startButton.interactable = State == RoundState.Ready;
-        ryoText.text = $"Ryo: {Ryo}  |  Tenten: {TentenCost} Ryo";
+        ryoText.text = $"Ryo: {Ryo}  |  Tenten: 50 Ryo  |  Sasuke: 60 Ryo";
         string wave = $"Wave {CurrentWaveNumber} of {WaveCount}";
         statusText.text = State == RoundState.Ready ? $"{wave}  |  Place Tenten, then Start Wave" :
             HasEnded ? $"{State}  |  {wave}" : $"{wave}  |  Spawned {SpawnedCount}/{CurrentWaveSize}  |  Defeated {DefeatedCount}/{CurrentWaveSize}";

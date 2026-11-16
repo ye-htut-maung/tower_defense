@@ -8,17 +8,18 @@ public class TowerPlacement : MonoBehaviour
     [SerializeField] private Camera gameCamera;
     [SerializeField] private Transform towerPads;
     [SerializeField] private TentenTower towerPrefab;
+    [SerializeField] private TentenTower sasukePrefab;
     [SerializeField] private RoundController round;
     [SerializeField] private TowerDeploymentPanel panel;
     [SerializeField] private Material previewMaterial;
-    [SerializeField] private string towerName = "Genin Tenten";
-    [SerializeField] private string damageDescription = "Ranged physical damage";
 
     public const int SellRefund = 35;
     private enum SelectionMode { None, Empty, Occupied, ConfirmSale, ConfirmUpgrade }
     private SelectionMode mode;
     private Transform selectedPad;
     private TentenTower selectedTower;
+    private TentenTower pendingPrefab;
+    private TentenTower Chosen => selectedTower != null ? selectedTower : pendingPrefab != null ? pendingPrefab : towerPrefab;
     private InputAction placeAction;
     private LineRenderer rangePreview;
     private LineRenderer selectionHighlight;
@@ -34,6 +35,7 @@ public class TowerPlacement : MonoBehaviour
         panel.ConfirmRequested += ConfirmAction;
         panel.UpgradeRequested += AskToUpgrade;
         panel.CancelRequested += ClearSelection;
+        panel.ChoiceRequested += ChooseTower;
         round.RyoChanged += RefreshAffordability;
         placeAction = new InputAction("Select tower pad", InputActionType.Button, "<Mouse>/leftButton");
         placeAction.performed += OnPlace;
@@ -53,6 +55,7 @@ public class TowerPlacement : MonoBehaviour
         panel.ConfirmRequested -= ConfirmAction;
         panel.UpgradeRequested -= AskToUpgrade;
         panel.CancelRequested -= ClearSelection;
+        panel.ChoiceRequested -= ChooseTower;
         round.RyoChanged -= RefreshAffordability;
         ClearSelection();
     }
@@ -82,15 +85,31 @@ public class TowerPlacement : MonoBehaviour
         selectedPad = pad;
         selectedTower = pad.GetComponentInChildren<TentenTower>();
         mode = selectedTower == null ? SelectionMode.Empty : SelectionMode.Occupied;
-        panel.Show(selectedTower != null && selectedTower.IsChunin ? "Chunin Tenten" : towerName,
-            selectedTower != null ? $"{damageDescription} ({selectedTower.DamagePerHit} per hit)" : damageDescription,
-            mode == SelectionMode.Empty, RoundController.TentenCost, SellRefund, round.CanAffordTenten,
-            selectedTower != null && selectedTower.IsChunin, round.Ryo >= RoundController.ChuninUpgradeCost);
+        pendingPrefab = towerPrefab;
+        ShowChoice();
         DrawCircle(ref selectionHighlight, "Selected Pad", pad.position, 1.05f,
             new Color(1f, .8f, .2f), .08f);
         DrawCircle(ref rangePreview, "Attack Range Preview", pad.position,
-            selectedTower != null ? selectedTower.AttackRange : towerPrefab.AttackRange,
+            Chosen.AttackRange,
             new Color(.3f, 1f, .85f), .045f);
+    }
+
+    private void ChooseTower(bool sasuke)
+    {
+        if (!CanManage || mode != SelectionMode.Empty || selectedPad == null) return;
+        pendingPrefab = sasuke ? sasukePrefab : towerPrefab;
+        ShowChoice();
+        DrawCircle(ref rangePreview, "Attack Range Preview", selectedPad.position,
+            Chosen.AttackRange, new Color(.3f, 1f, .85f), .045f);
+    }
+
+    private void ShowChoice()
+    {
+        var tower = Chosen;
+        panel.Show(tower.DisplayName, tower.AttackDescription, mode == SelectionMode.Empty,
+            tower.DeploymentCost, tower.SellValue, round.CanAfford(tower.DeploymentCost),
+            tower.IsChunin, round.Ryo >= RoundController.ChuninUpgradeCost,
+            tower.SupportsUpgrade, tower.IsSasuke);
     }
 
     private void DrawCircle(ref LineRenderer line, string name, Vector3 center, float radius,
@@ -121,10 +140,9 @@ public class TowerPlacement : MonoBehaviour
     {
         if (!CanManage || mode != SelectionMode.Empty || selectedPad == null ||
             selectedPad.GetComponentInChildren<TentenTower>() != null) return;
-        if (!round.CanAffordTenten)
+        if (!round.CanAfford(Chosen.DeploymentCost))
         {
-            panel.Show(towerName, damageDescription, true, RoundController.TentenCost,
-                SellRefund, false);
+            ShowChoice();
             return;
         }
         float top = selectedPad.GetComponent<Renderer>().bounds.max.y;
@@ -133,10 +151,10 @@ public class TowerPlacement : MonoBehaviour
             Renderer mesh = surface.GetComponent<Renderer>();
             if (mesh != null) top = Mathf.Max(top, mesh.bounds.max.y);
         }
-        TentenTower tower = Instantiate(towerPrefab,
+        TentenTower tower = Instantiate(Chosen,
             new Vector3(selectedPad.position.x, top, selectedPad.position.z), Quaternion.identity);
         tower.transform.SetParent(selectedPad, true);
-        if (!round.TryPayForTenten())
+        if (!round.TryPayDeployment(tower.DeploymentCost))
         {
             tower.gameObject.SetActive(false);
             Destroy(tower.gameObject);
@@ -148,7 +166,7 @@ public class TowerPlacement : MonoBehaviour
     {
         if (!CanManage || mode != SelectionMode.Occupied || selectedTower == null) return;
         mode = SelectionMode.ConfirmSale;
-        panel.AskToConfirmSale(SellRefund);
+        panel.AskToConfirmSale(selectedTower.SellValue);
     }
 
     private void ConfirmSale()
@@ -158,13 +176,13 @@ public class TowerPlacement : MonoBehaviour
         ClearSelection(); // Consume confirmation before removing/refunding the tower.
         sold.gameObject.SetActive(false);
         Destroy(sold.gameObject);
-        round.RefundTentenSale();
+        round.RefundTowerSale(sold.SellValue);
     }
 
     private void AskToUpgrade()
     {
         if (!CanManage || mode != SelectionMode.Occupied || selectedTower == null ||
-            selectedTower.IsChunin || round.Ryo < RoundController.ChuninUpgradeCost) return;
+            !selectedTower.SupportsUpgrade || selectedTower.IsChunin || round.Ryo < RoundController.ChuninUpgradeCost) return;
         mode = SelectionMode.ConfirmUpgrade;
         panel.AskToConfirmUpgrade();
     }
@@ -177,7 +195,7 @@ public class TowerPlacement : MonoBehaviour
             return;
         }
         if (!CanManage || mode != SelectionMode.ConfirmUpgrade || selectedTower == null ||
-            selectedTower.IsChunin || !round.TryPayForChuninUpgrade()) return;
+            !selectedTower.SupportsUpgrade || selectedTower.IsChunin || !round.TryPayForChuninUpgrade()) return;
         selectedTower.UpgradeToChunin();
         ClearSelection();
     }
@@ -187,6 +205,7 @@ public class TowerPlacement : MonoBehaviour
         mode = SelectionMode.None;
         selectedPad = null;
         selectedTower = null;
+        pendingPrefab = null;
         if (panel != null) panel.Hide();
         if (rangePreview != null) rangePreview.gameObject.SetActive(false);
         if (selectionHighlight != null) selectionHighlight.gameObject.SetActive(false);
@@ -195,7 +214,7 @@ public class TowerPlacement : MonoBehaviour
     private void RefreshAffordability()
     {
         if (!CanManage) ClearSelection();
-        else panel.UpdateAffordability(round.CanAffordTenten,
+        else panel.UpdateAffordability(round.CanAfford(Chosen.DeploymentCost),
             round.Ryo >= RoundController.ChuninUpgradeCost);
     }
 }

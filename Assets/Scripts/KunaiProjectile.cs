@@ -1,9 +1,14 @@
 using UnityEngine;
 
+// Shared physics impact/lifetime logic for kunai and fireball prefabs.
 [RequireComponent(typeof(Rigidbody), typeof(SphereCollider))]
 public class KunaiProjectile : MonoBehaviour
 {
     private const float Lifetime = 3f;
+    [SerializeField] private bool homing = true;
+    [SerializeField] private DamageType damageType = DamageType.Physical;
+    public DamageType DamageKind => damageType;
+    public bool IsHoming => homing;
 
     private Rigidbody body;
     private SphereCollider hitCollider;
@@ -30,6 +35,8 @@ public class KunaiProjectile : MonoBehaviour
         target = enemy;
         speed = movementSpeed;
         Damage = Mathf.Max(1, damage);
+        Vector3 offset = enemy != null ? enemy.transform.position - body.position : transform.forward;
+        if (offset.sqrMagnitude > 0.0001f) direction = offset.normalized;
     }
 
     private void FixedUpdate()
@@ -40,7 +47,7 @@ public class KunaiProjectile : MonoBehaviour
         }
 
         // Track the moving capsule; if it disappears, continue until expiry.
-        if (target != null && target.CurrentHealth > 0)
+        if (homing && target != null && target.CurrentHealth > 0)
         {
             Vector3 offset = target.transform.position - body.position;
             if (offset.sqrMagnitude > 0.0001f)
@@ -87,7 +94,7 @@ public class KunaiProjectile : MonoBehaviour
         hasHit = true;
         hitCollider.enabled = false;
         body.detectCollisions = false;
-        enemy.TakeDamage(Damage);
+        enemy.TakeDamage(Damage, damageType);
         Destroy(gameObject);
         return true;
     }
