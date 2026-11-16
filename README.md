@@ -2,14 +2,16 @@
 
 Unity project using Unity **6000.6.0f1** and the Universal Render Pipeline (URP).
 The current map is **Hidden Leaf Forest Road** in `Assets/Scenes/Main.unity`.
-It contains a primitive road, six enemy waypoints, a spawn marker, a gate
-placeholder, and six tower pads. Regular enemies are violet hooded ninja
+It contains a primitive road, six enemy waypoints, a spawn marker, a textured
+Hidden Leaf Gate, and six tower pads. Regular enemies are violet hooded ninja
 placeholders with **3 HP**; tough enemies remain orange capsules with **6 HP**.
 The ninja is built from Unity primitives under the enemy prefab's `Ninja Visual`
 child, with a headband, mask, scarf and boots. Only this model turns to face travel;
 the gameplay root, collider, health and movement retain their original behavior.
-Both types follow the same waypoints at
-**4 units/second** and award **20 Ryo** when defeated. `Assets/Prefabs/Enemy.prefab`
+Both types follow the same waypoints: regular enemies move at **4 units/second**
+and tough enemies at **3 units/second**. Both award **20 Ryo** when defeated.
+The tough prefab overrides the existing Enemy Movement **Movement Speed** setting;
+regular enemies retain the base prefab's speed. `Assets/Prefabs/Enemy.prefab`
 is the regular enemy; `Assets/Prefabs/ToughEnemy.prefab` is its tough variant.
 `EnemyHealth.TakeDamage` subtracts health and removes the enemy at zero.
 
@@ -124,11 +126,51 @@ for 50 Ryo, then, after Restart, Sasuke on Pad 3 for 60 Ryo. The final Console
 had zero errors and one Unity AI Toolkit Account API timeout warning. Play Mode
 was exited and Main saved with empty pads.
 
+Step 18 verified the distinct speeds in Main using the actual enemy prefabs and
+six waypoints: both completed all four turns and reached the gate. The 66-unit
+route took approximately **16.50 seconds** for regular enemies and **22.00 seconds**
+for tough enemies. Separate straight-stretch physics checks confirmed Tenten's
+kunai and Sasuke's fireball each intercepted both moving types, dealing 1 physical
+and 2 fire damage respectively, once per projectile. The same Pads 2/3 strategy
+above cleared all three waves again: **Victory with 180 Ryo**. Wave composition,
+intervals, tower stats, HP, and predictive aiming were unchanged. Console: zero
+errors and two internal Unity JobTempAlloc warnings before the winning run
+(allocation lifespan exceeded four frames, followed by a diagnostic-launch
+suggestion); no new messages appeared during the winning run. Play Mode was
+exited, temporary test observers removed, and Main saved with empty pads.
+
 Verified mixed Wave 1: deploy Tenten on **Pad 3** (100 -> 50 Ryo), select empty
 **Pad 2**, choose **Sasuke**, then Start Wave with that panel open. After Tenten's
 first defeat reward raises the balance to 70, Deploy becomes enabled. Deploy
 Sasuke for 60 (10 left). The remaining enemies were defeated with both towers;
 Wave 1 cleared with **50 Ryo**. This also checks deployment during an active wave.
+
+## Hidden Leaf Gate asset (Step 19a)
+
+The gate uses the user-supplied Meshy AI export named
+`Meshy_AI_Hidden_Leaf_Village_Gate_20261116_texture.fbx` and its accompanying
+textures, imported under `Assets/Art/HiddenLeafGate/Source/`. Attribution is to
+the supplied Meshy AI export; no individual creator or license file was provided
+with the source folder. The original FBX and all four texture files are preserved
+byte-for-byte; no reduced mesh was used. Unity imports **200,748 triangles**
+(112,996 vertices).
+
+`Hidden Leaf Gate.mat` uses the project's **URP Lit** shader with the supplied
+base-color and normal textures. The normal texture is imported as a Normal Map.
+Metallic and roughness source images are retained; this material uses constant
+metallic 0 and smoothness 0.25. The visual is centered over Point5, rotated
+55 degrees around Y and scaled 1.9 on its parent so the arch spans the final road
+and the roof is readable from the unchanged gameplay camera. The primitive gate
+was removed; the new visual has no colliders and does not change waypoints or
+defeat logic.
+
+In Play Mode, Wave 1 with six empty pads reached **Defeat** when the first enemy
+arrived at `(18, 0.9, -12)`. Restart restored Wave 1, 100 Ryo, six empty pads and
+zero enemies/projectiles; the textured gate stayed in place. At 1280x720, both
+the roof and approaching enemies were visible, with no missing textures.
+Final Console: **0 errors, 0 warnings**. Main was saved and Play Mode exited.
+
+![Gate and final approach in Game view](Documentation/Screenshots/step19a-gate-final-approach.png)
 
 ## Open and run
 
