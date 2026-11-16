@@ -3,8 +3,12 @@
 Unity project using Unity **6000.6.0f1** and the Universal Render Pipeline (URP).
 The current map is **Hidden Leaf Forest Road** in `Assets/Scenes/Main.unity`.
 It contains a primitive road, six enemy waypoints, a spawn marker, a gate
-placeholder, and six tower pads. Regular enemies are magenta with **3 HP**;
-tough enemies are orange with **6 HP**. Both follow the same waypoints at
+placeholder, and six tower pads. Regular enemies are violet hooded ninja
+placeholders with **3 HP**; tough enemies remain orange capsules with **6 HP**.
+The ninja is built from Unity primitives under the enemy prefab's `Ninja Visual`
+child, with a headband, mask, scarf and boots. Only this model turns to face travel;
+the gameplay root, collider, health and movement retain their original behavior.
+Both types follow the same waypoints at
 **4 units/second** and award **20 Ryo** when defeated. `Assets/Prefabs/Enemy.prefab`
 is the regular enemy; `Assets/Prefabs/ToughEnemy.prefab` is its tough variant.
 `EnemyHealth.TakeDamage` subtracts health and removes the enemy at zero.
@@ -15,8 +19,10 @@ enemies use the same bar divided by their 6-HP maximum: three Chunin hits take
 them through **6 -> 4 -> 2 -> defeated**, showing 4/6 then 2/6. Each bar
 follows its enemy and is removed on defeat or Restart. Bars do not block clicks.
 To fit a future model, adjust **Vertical Offset** on the **Enemy Health Bar**
-component in `Assets/Prefabs/Enemy.prefab` (default: 1.25 world units above the
-enemy's origin).
+component in `Assets/Prefabs/Enemy.prefab` (default: **1.4 world units** above the
+ninja's origin; the tough variant retains **1.25**). To prototype a future model,
+replace primitives inside `Ninja Visual` while retaining its `EnemyVisualFacing`
+component and gameplay-root reference. Keep gameplay collision on the root.
 
 All six pads start empty. Before, during, or between waves, left-click a pad to
 select it. The highlighted pad shows a shared tower panel and a map preview of

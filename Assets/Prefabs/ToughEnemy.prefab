@@ -17,6 +17,10 @@ PrefabInstance:
       value: ToughEnemy
       objectReference: {fileID: 0}
     - target: {fileID: 7117203454092834096, guid: e5cfa2194a09e4aa8af35b4517a3320c, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7117203454092834096, guid: e5cfa2194a09e4aa8af35b4517a3320c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value:
       objectReference: {fileID: 2100000, guid: 0cb962d5152ed4869960dad939a52a1e, type: 2}
@@ -58,6 +62,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8217938058709354264, guid: e5cfa2194a09e4aa8af35b4517a3320c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8553266972486967421, guid: e5cfa2194a09e4aa8af35b4517a3320c, type: 3}
+      propertyPath: verticalOffset
+      value: 1.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 9043379069207560011, guid: e5cfa2194a09e4aa8af35b4517a3320c, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
