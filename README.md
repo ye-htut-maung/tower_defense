@@ -4,7 +4,8 @@ Unity project using Unity **6000.6.0f1** and the Universal Render Pipeline (URP)
 The current map is **Hidden Leaf Forest Road** in `Assets/Scenes/Main.unity`.
 It contains a primitive road, six enemy waypoints, a spawn marker, a textured
 Hidden Leaf Gate, and six tower pads. Regular enemies are violet hooded ninja
-placeholders with **3 HP**; tough enemies remain orange capsules with **6 HP**.
+placeholders with **3 HP**; tough enemies are armored ninjas with **6 HP**, broad
+burnt-orange shoulder plates, a charcoal outfit and a steel helmet with an orange crest.
 The ninja is built from Unity primitives under the enemy prefab's `Ninja Visual`
 child, with a headband, mask, scarf and boots. Only this model turns to face travel;
 the gameplay root, collider, health and movement retain their original behavior.
@@ -22,7 +23,7 @@ them through **6 -> 4 -> 2 -> defeated**, showing 4/6 then 2/6. Each bar
 follows its enemy and is removed on defeat or Restart. Bars do not block clicks.
 To fit a future model, adjust **Vertical Offset** on the **Enemy Health Bar**
 component in `Assets/Prefabs/Enemy.prefab` (default: **1.4 world units** above the
-ninja's origin; the tough variant retains **1.25**). To prototype a future model,
+ninja's origin; the armored tough variant uses **1.55** to clear its helmet). To prototype a future model,
 replace primitives inside `Ninja Visual` while retaining its `EnemyVisualFacing`
 component and gameplay-root reference. Keep gameplay collision on the root.
 
@@ -145,11 +146,50 @@ first defeat reward raises the balance to 70, Deploy becomes enabled. Deploy
 Sasuke for 60 (10 left). The remaining enemies were defeated with both towers;
 Wave 1 cleared with **50 Ryo**. This also checks deployment during an active wave.
 
+## Final Play Mode verification (Step 20)
+
+The tough variant reuses the regular `Ninja Visual` child, adding broad
+burnt-orange shoulder plates and a steel helmet over a charcoal outfit. Its
+original capsule renderer is disabled; the gameplay capsule collider is retained.
+The visual primitives have no colliders. Materials are in
+`Assets/Materials/ArmoredNinja/`; geometry and material overrides are saved in
+`Assets/Prefabs/ToughEnemy.prefab`. Movement, HP, rewards, wave placement and
+predictive aiming are unchanged.
+
+The documented Pads 2/3 Tenten strategy cleared all three waves with the armored
+ninja and textured gate: **Victory, 180 Ryo**. Wave 1 left 60 Ryo; upgrading Pad 3
+before Wave 2 spent 60, Wave 2 left 100, and upgrading Pad 2 before Wave 3 left 40.
+Real kunai impacts updated armored health bars, including 4/6 and 2/6; the raised
+bar remained readable above the helmet. Violet and armored enemies are distinct
+from the unchanged gameplay camera.
+
+Empty pads caused **Defeat** when an enemy reached Point5, with no Ryo reward.
+Restart after both Victory and Defeat restored Wave 1, 100 Ryo, six empty pads,
+no enemies/projectiles and no pending selection; the textured gate remained.
+The complete placement hint was readable at 1280x720. Both tower choices deployed;
+active-wave checks passed deployment, canceling/confirming sales, 35/42-Ryo refunds,
+immediate pad reuse, and canceling/confirming the 60-Ryo Chunin upgrade. Confirmed
+transactions occurred once. Waves continued with the panel open and kill rewards
+updated affordability. Mouse-input deployment was also checked using temporary
+in-memory Editor focus routing, then the original default input settings restored.
+The active-wave transactions and empty-pad Defeat/Restart checks were rerun after
+restoration. Final Console: **0 errors, 0 warnings**. Main was saved with empty
+pads and Play Mode exited.
+
+Final checks run in Unity 6000.6.0f1 Play Mode; no standalone player build was made.
+Gate FBX/textures/material and armor assets have their `.meta` files. The renamed
+gate sources retain their GUIDs and the original source files. The source renames,
+armor assets and their metadata are included together.
+
+![Regular and armored enemies with a damaged armored health bar](Documentation/Screenshots/step20-armored-ninja.png)
+
 ## Hidden Leaf Gate asset (Step 19a)
 
 The gate uses the user-supplied Meshy AI export named
-`Meshy_AI_Hidden_Leaf_Village_Gate_20261116_texture.fbx` and its accompanying
-textures, imported under `Assets/Art/HiddenLeafGate/Source/`. Attribution is to
+`HiddenLeafGate.fbx` and its accompanying
+textures named `HiddenLeafGate_BaseColor`, `HiddenLeafGate_Normal`,
+`HiddenLeafGate_Metallic`, and `HiddenLeafGate_Roughness`, imported under
+`Assets/Art/HiddenLeafGate/Source/`. Attribution is to
 the supplied Meshy AI export; no individual creator or license file was provided
 with the source folder. The original FBX and all four texture files are preserved
 byte-for-byte; no reduced mesh was used. Unity imports **200,748 triangles**
