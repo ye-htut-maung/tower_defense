@@ -101,7 +101,20 @@ public class RoundController : MonoBehaviour
             EnemyType.Tough, EnemyType.Regular, EnemyType.Regular, EnemyType.Tough,
             EnemyType.Regular, EnemyType.Regular, EnemyType.Tough, EnemyType.Tough,
             EnemyType.Regular, EnemyType.Regular, EnemyType.Tough, EnemyType.Tough,
-            EnemyType.Tough)
+            EnemyType.Tough),
+        new WaveSettings(0.45f,
+            EnemyType.Tough, EnemyType.Tough, EnemyType.Regular, EnemyType.Regular, EnemyType.Tough,
+            EnemyType.Tough, EnemyType.Regular, EnemyType.Regular, EnemyType.Tough, EnemyType.Tough,
+            EnemyType.Tough, EnemyType.Regular, EnemyType.Regular, EnemyType.Tough, EnemyType.Tough,
+            EnemyType.Tough, EnemyType.Regular, EnemyType.Regular, EnemyType.Tough, EnemyType.Tough,
+            EnemyType.Tough, EnemyType.Regular, EnemyType.Regular, EnemyType.Tough),
+        new WaveSettings(0.4f,
+            EnemyType.Tough, EnemyType.Tough, EnemyType.Tough, EnemyType.Regular, EnemyType.Regular,
+            EnemyType.Tough, EnemyType.Tough, EnemyType.Tough, EnemyType.Tough, EnemyType.Regular,
+            EnemyType.Regular, EnemyType.Tough, EnemyType.Tough, EnemyType.Tough, EnemyType.Tough,
+            EnemyType.Regular, EnemyType.Regular, EnemyType.Tough, EnemyType.Tough, EnemyType.Tough,
+            EnemyType.Tough, EnemyType.Regular, EnemyType.Regular, EnemyType.Tough, EnemyType.Tough,
+            EnemyType.Tough, EnemyType.Regular, EnemyType.Regular)
     };
     private int waveIndex;
     public int CurrentWaveNumber => waveIndex + 1;

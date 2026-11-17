@@ -1,14 +1,14 @@
 # Hidden Leaf Defense
 
-Defend the Hidden Leaf Gate from five waves of invading ninjas in this 3D tower defense game for CSCI 381. Spend Ryo on Tenten and Sasuke towers, and use placement and upgrades to stop every enemy before it reaches the gate.
+Defend the Hidden Leaf Gate from seven waves of invading ninjas in this 3D tower defense game for CSCI 381. Spend Ryo on Tenten and Sasuke towers, and use placement and upgrades to stop every enemy before it reaches the gate.
 
 ## How to Play
 
 - **Place towers:** Left-click one of the six empty stone pads, choose Tenten or Sasuke, check the range preview, then press **Deploy**. Each pad holds one tower.
 - **Manage Ryo:** Start with **100 Ryo**. Tenten costs **50 Ryo**, Sasuke costs **60 Ryo**, and each defeated enemy earns **15 Ryo**.
 - **Upgrade or sell:** Select an occupied pad to upgrade Genin Tenten to Chunin for **60 Ryo**, or sell either tower for a partial refund. Confirm the action or cancel without spending. Tower management remains available during waves.
-- **Start waves:** Press **Start Wave** when ready. Each of the five waves starts manually, giving you time to adjust your defenses between waves.
-- **Win or restart:** Defeat every enemy in all five waves to win. Any enemy reaching the gate causes Defeat. **Restart** returns to Wave 1 with empty pads and 100 Ryo.
+- **Start waves:** Press **Start Wave** when ready. Each of the seven waves starts manually, giving you time to adjust your defenses between waves.
+- **Win or restart:** Defeat every enemy in all seven waves to win. Any enemy reaching the gate causes Defeat. **Restart** returns to Wave 1 with empty pads and 100 Ryo.
 
 ## Features
 
