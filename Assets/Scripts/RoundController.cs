@@ -24,6 +24,9 @@ public class RoundController : MonoBehaviour
     public bool CanAfford(int cost) => Ryo >= cost;
     public bool CanManageTowers => State == RoundState.Ready || State == RoundState.Running;
     public event System.Action RyoChanged;
+    public event System.Action WaveStarted;
+    public event System.Action<RoundState> RoundEnded;
+    public event System.Action RoundRestarted;
 
     public bool TryPayForChuninUpgrade()
     {
@@ -119,6 +122,7 @@ public class RoundController : MonoBehaviour
         State = RoundState.Running;
         SpawnEnemy();
         RefreshUI();
+        WaveStarted?.Invoke();
     }
 
     private void Update()
@@ -179,6 +183,7 @@ public class RoundController : MonoBehaviour
         foreach (TentenTower tower in FindObjectsByType<TentenTower>()) tower.enabled = false;
         foreach (KunaiProjectile kunai in FindObjectsByType<KunaiProjectile>()) Remove(kunai.gameObject);
         RefreshUI();
+        RoundEnded?.Invoke(result);
     }
 
     public void RestartRound()
@@ -196,6 +201,7 @@ public class RoundController : MonoBehaviour
         placementMessage.text = "";
         placement.ResetPlacement();
         RefreshUI();
+        RoundRestarted?.Invoke();
     }
 
     private static void Remove(GameObject obj)

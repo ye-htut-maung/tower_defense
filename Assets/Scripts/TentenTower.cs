@@ -4,6 +4,10 @@ using UnityEngine;
 public class TentenTower : MonoBehaviour
 {
     public enum TowerKind { Tenten, Sasuke }
+    public static event System.Action<TowerKind> ShotFired;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetShotListeners() => ShotFired = null;
     [SerializeField] private TowerKind towerKind;
     public bool IsSasuke => towerKind == TowerKind.Sasuke;
     public bool SupportsUpgrade => !IsSasuke;
@@ -98,6 +102,7 @@ public class TentenTower : MonoBehaviour
         KunaiProjectile kunai = Instantiate(kunaiPrefab, origin, launchRotation);
         kunai.Initialize(intercept, speed, DamagePerHit);
         nextShotTime = Time.time + Mathf.Max(0.05f, timeBetweenShots);
+        ShotFired?.Invoke(towerKind);
     }
 
     private void OnDrawGizmosSelected()

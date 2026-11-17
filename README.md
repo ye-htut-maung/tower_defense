@@ -264,6 +264,40 @@ mixed Tenten/Sasuke strategy finished **Victory with 230 Ryo**. Console during
 verification and cleanup: **0 errors, 0 warnings**. Main saved with empty pads and
 Play Mode exited. Review screenshots remain local and uncommitted.
 
+## Audio and credits (Step 25)
+
+Background music is **Calm Track (loopable version)** by **pmiller**, released
+under **CC0 1.0 Universal** on [OpenGameArt](https://opengameart.org/content/calm-track).
+The original `calm_track-loop.ogg` is included unchanged as
+`Assets/Audio/Music/ForestCalmLoop.ogg`. See
+[audio credits](Assets/Audio/CREDITS.md) and the included
+[CC0 license](Assets/Audio/LICENSE-CC0.txt).
+
+The five effects in `Assets/Audio/SFX/` are original synthesized sounds created
+for this project and dedicated under CC0, without third-party samples: a short
+metallic kunai swish, a lower fireball whoosh, and separate wave-start, Victory
+and Defeat note cues. Attacks sound when a projectile is actually fired. Round
+cues follow accepted wave starts and guarded outcome transitions, so rejected
+button calls do not replay them.
+
+The scene's `Game Audio` object has separate 2D music, attack and round-cue
+sources. Volumes are 0.12 / 0.55 / 0.8, keeping music below the effects. Restart
+stops old effects/cues and keeps the same single music loop; the manager does not
+spawn persistent audio objects. Adjust the three AudioSource volumes in the
+Inspector to tune the mix.
+
+Play Mode verification observed the real 249.237-second music clip wrap back to
+the start after seeking near its end, with continuous playback and nonzero live
+listener output. The mixed three-wave run won with 230 Ryo, triggering 23 kunai
+and 14 fireball sounds, three accepted wave-start cues and one Victory cue.
+An empty-pad run produced one more wave-start cue and exactly one Defeat cue.
+Repeated rejected start/end calls did not replay cues; repeated Restart after
+both outcomes kept one music loop on the same source. A fresh Play Mode startup
+and three further Restarts also kept one loop, with attack/cue sources stopped.
+Final Console: **0 errors, 0 warnings**. Main saved and Play Mode exited.
+After verification, music gain was raised from 0.04 to 0.12 at the user's request;
+the other volumes and playback logic are unchanged.
+
 ## Final Play Mode verification (Step 20)
 
 The tough variant reuses the regular `Ninja Visual` child, adding broad
