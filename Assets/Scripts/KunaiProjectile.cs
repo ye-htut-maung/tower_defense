@@ -8,6 +8,7 @@ public class KunaiProjectile : MonoBehaviour
     [SerializeField] private DamageType damageType = DamageType.Physical;
     public DamageType DamageKind => damageType;
     public bool IsHoming => false;
+    public event System.Action<Vector3> Impacted;
 
     private Rigidbody body;
     private SphereCollider hitCollider;
@@ -87,6 +88,7 @@ public class KunaiProjectile : MonoBehaviour
         hasHit = true;
         hitCollider.enabled = false;
         body.detectCollisions = false;
+        Impacted?.Invoke(other.ClosestPoint(body.position));
         enemy.TakeDamage(Damage, damageType);
         Destroy(gameObject);
         return true;

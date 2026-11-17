@@ -197,6 +197,26 @@ prefab references and matching metadata were checked for submission.
 ![Imported Genin Tenten and Sasuke deployed](Documentation/Screenshots/imported-genin-towers.png)
 ![Chunin Tenten's blue rank accent and Sasuke](Documentation/Screenshots/imported-chunin-tenten-sasuke.png)
 
+## Sasuke fireball polish (Step 22)
+
+Fireballs now have a bright yellow-white core, an orange halo, a short hot trail
+and drifting ember particles. A confirmed enemy impact creates a brief flash
+with 16 sparks; the burst fades and removes itself automatically. Effects add
+no colliders or damage. The existing 0.35-radius trigger, 14-unit/second speed,
+2 fire damage, firing interval, range and straight predictive aiming are unchanged.
+
+Play Mode checks from the overhead camera confirmed visible flight and impact
+effects. Single shots took a moving tough enemy from 6 to 4 HP and a moving
+regular enemy with overlapping colliders from 3 to 1 HP. Each shot caused one
+burst and one damage application; health stayed unchanged afterward, and each
+burst was gone within 0.55 seconds. A normal mixed Tenten/Sasuke Wave 1 cleared
+with 50 Ryo, with both physical and fire impacts observed. Console during these
+checks: **0 errors, 0 warnings**. Full three-wave play was not repeated for this
+visual polish.
+
+![Fireball core and short ember trail](Documentation/Screenshots/fireball-flight.png)
+![Quick burst at a confirmed enemy impact](Documentation/Screenshots/fireball-impact.png)
+
 ## Final Play Mode verification (Step 20)
 
 The tough variant reuses the regular `Ninja Visual` child, adding broad
