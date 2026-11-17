@@ -44,7 +44,7 @@ when the balance is below the selected tower's price. Each pad accepts one tower
 | Tenten | 50 / 35 Ryo | Kunai: 1 physical damage | 0.9 seconds | 10 units/s | 5.5 |
 | Sasuke | 60 / 42 Ryo | Fire Style: Fireball Jutsu, 2 fire damage | 1.6 seconds | 14 units/s | 5.5 |
 
-Sasuke's indigo-shirt/spiky-hair placeholder is **0.5 world units taller** than
+Sasuke's textured Genin model is **0.5 world units taller** than
 Genin Tenten (2.29 versus 1.79 units). His glowing fireball sphere has a short
 trail and deals damage to one enemy once on 3D impact.
 
@@ -61,7 +61,7 @@ On an occupied **Genin Tenten** pad, **Upgrade - 60 Ryo** opens a confirmation s
 the cost and the change from **1 to 2 physical damage per hit**. **Confirm Upgrade**
 charges 60 Ryo once and upgrades that tower on its existing pad. Cancel spends
 nothing; the upgrade is disabled with **Not enough Ryo.** below 60 Ryo.
-Chunin Tenten has a blue tunic accent and is marked **Highest tier** in the panel.
+Chunin Tenten has a blue rank disc beneath her feet and is marked **Highest tier** in the panel.
 Her range and fire rate stay the same. Only her newly fired kunai deal 2 damage;
 other Genin towers and already airborne kunai retain their original damage.
 Chunin's first hit leaves a fresh 3-HP enemy at 1 HP (one-third bar); the second
@@ -145,6 +145,57 @@ Verified mixed Wave 1: deploy Tenten on **Pad 3** (100 -> 50 Ryo), select empty
 first defeat reward raises the balance to 70, Deploy becomes enabled. Deploy
 Sasuke for 60 (10 left). The remaining enemies were defeated with both towers;
 Wave 1 cleared with **50 Ryo**. This also checks deployment during an active wave.
+
+## Imported tower and kunai models
+
+User-supplied Meshy AI character exports now replace both primitive tower visuals.
+The Tenten export is organized as `Assets/Art/TentenGenin/Source/Tenten_Genin.fbx`;
+the supplied Young Shadow Ninja export is Sasuke at
+`Assets/Art/SasukeGenin/Source/Sasuke_Genin.fbx`. Each has matching `_BaseColor`,
+`_Normal`, `_Metallic`, `_Roughness`, and `_Emission` PNGs. URP Lit materials live
+beside the Source folders and reference their own character's base color, normal,
+metallic and emission maps. Normal maps use Normal Map import; metallic/roughness
+use linear color space. Roughness sources are retained; smoothness is 0.25.
+No individual creator or license file accompanied these supplied exports.
+
+`Assets/Art/TentenKunai/Source/Tenten_Kunai.fbx` replaces the projectile's visual
+children. No separate kunai textures were supplied, so it uses a URP steel material.
+The source blade's +Y tip is rotated to projectile +Z, with a total length of 0.85
+units. Existing Rigidbody, trigger collider, impact damage and three-second
+lifetime are unchanged. Imported triangle counts: Tenten **84,084**, Sasuke
+**121,766**, kunai **640**. No mesh reduction or source-file changes were made.
+
+The original unimported exports were also renamed locally to `TentenGenin/`,
+`SasukeGenin/`, and `Tenten_Kunai.fbx` at the project root, with matching clear
+texture filenames; these local copies are not required by Unity. The imported
+sources under `Assets/Art/` preserve all source bytes. Unity metadata accompanies
+all imported files. The tower prefab roots retain their firing settings and
+launch points; only visual children and Tenten's upgrade-accent reference changed.
+Tenten is 1.79 units tall; Sasuke is 2.29. Their feet sit on the pad surface.
+Tenten's original upgrade logic changes a red rank disc to blue while preserving
+the textured model. Neither imported character adds colliders.
+
+Play Mode checks passed with both towers deployed through the normal pad/panel
+controls and normal Ryo. Tenten's kunai and Sasuke's fireball each hit moving
+regular and tough enemies once for 1 physical / 2 fire damage. The mixed Wave 1
+cleared with 50 Ryo; an earned Wave 2 reward enabled the 60-Ryo Chunin upgrade,
+which left 10 Ryo and changed the rank disc to blue. Wave 2 then cleared with
+90 Ryo. Inspected Game view for scale, facing, materials and the upgrade accent.
+Final Console: **0 errors, 0 warnings**. Main was saved with empty pads and Play
+Mode exited.
+
+Follow-up full three-wave Play Mode test also passed using only Tenten on Pad 3
+and Sasuke on Pad 2: **Victory, 230 Ryo**. Deploy Tenten before Wave 1, deploy
+Sasuke after the first kill enables her 60-Ryo cost, then upgrade Tenten during
+Wave 2 after its first kill enables the 60-Ryo upgrade. Wave 1 cleared with 50
+Ryo, Wave 2 with 90, and all seven Wave 3 enemies were defeated. The blue rank
+accent was readable from the gameplay camera; the kunai blade axis matched its
+straight flight direction, and both physical and fire impacts were observed.
+Console during this run: **0 errors, 0 warnings**. FBXs, textures, materials,
+prefab references and matching metadata were checked for submission.
+
+![Imported Genin Tenten and Sasuke deployed](Documentation/Screenshots/imported-genin-towers.png)
+![Chunin Tenten's blue rank accent and Sasuke](Documentation/Screenshots/imported-chunin-tenten-sasuke.png)
 
 ## Final Play Mode verification (Step 20)
 
