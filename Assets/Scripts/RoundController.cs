@@ -17,6 +17,8 @@ public class RoundController : MonoBehaviour
     [SerializeField] private Text ryoText;
     [SerializeField] private Text placementMessage;
 
+    [SerializeField, Min(0)] private int defeatReward = 15;
+
     public const int TentenCost = 50;
     public const int ChuninUpgradeCost = 60;
     public int Ryo { get; private set; } = 100;
@@ -90,7 +92,16 @@ public class RoundController : MonoBehaviour
         new WaveSettings(1.6f, EnemyType.Regular, EnemyType.Regular, EnemyType.Tough,
             EnemyType.Regular, EnemyType.Regular),
         new WaveSettings(1.2f, EnemyType.Regular, EnemyType.Regular, EnemyType.Tough,
-            EnemyType.Regular, EnemyType.Regular, EnemyType.Tough, EnemyType.Regular)
+            EnemyType.Regular, EnemyType.Regular, EnemyType.Tough, EnemyType.Regular),
+        new WaveSettings(0.75f, EnemyType.Tough, EnemyType.Regular, EnemyType.Tough,
+            EnemyType.Tough, EnemyType.Regular, EnemyType.Tough, EnemyType.Regular,
+            EnemyType.Tough, EnemyType.Tough, EnemyType.Regular),
+        new WaveSettings(0.5f, EnemyType.Tough, EnemyType.Regular, EnemyType.Regular,
+            EnemyType.Tough, EnemyType.Regular, EnemyType.Regular, EnemyType.Tough,
+            EnemyType.Tough, EnemyType.Regular, EnemyType.Regular, EnemyType.Tough,
+            EnemyType.Regular, EnemyType.Regular, EnemyType.Tough, EnemyType.Tough,
+            EnemyType.Regular, EnemyType.Regular, EnemyType.Tough, EnemyType.Tough,
+            EnemyType.Tough)
     };
     private int waveIndex;
     public int CurrentWaveNumber => waveIndex + 1;
@@ -151,7 +162,7 @@ public class RoundController : MonoBehaviour
         if (State != RoundState.Running) return;
         if (!enemies.Remove(enemy)) return;
         DefeatedCount++;
-        Ryo += 20;
+        Ryo += defeatReward;
         placementMessage.text = "";
         if (SpawnedCount == CurrentWaveSize && DefeatedCount == CurrentWaveSize)
         {

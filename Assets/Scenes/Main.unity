@@ -9013,6 +9013,7 @@ MonoBehaviour:
   statusText: {fileID: 1020541824}
   ryoText: {fileID: 1035140206}
   placementMessage: {fileID: 422936572}
+  defeatReward: 15
   waves:
   - spawnOrder: 000000000000000000000000i
     spawnInterval: 2
@@ -9020,6 +9021,10 @@ MonoBehaviour:
     spawnInterval: 1.6
   - spawnOrder: 00000000000000000100000000000000000000000100000000000000i
     spawnInterval: 1.2
+  - spawnOrder: 01000000000000000100000001000000000000000100000000000000010000000100000000000000i
+    spawnInterval: 0.75
+  - spawnOrder: 0100000000000000000000000100000000000000000000000100000001000000000000000000000001000000000000000000000001000000010000000000000000000000010000000100000001000000i
+    spawnInterval: 0.5
 --- !u!4 &663335058
 Transform:
   m_ObjectHideFlags: 0
@@ -12818,7 +12823,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Wave 1 of 3  |  Click an empty pad, choose Tenten or Sasuke, then press Deploy.
+  m_Text: Wave 1 of 5  |  Click an empty pad, choose Tenten or Sasuke, then press Deploy.
 --- !u!222 &1020541825
 CanvasRenderer:
   m_ObjectHideFlags: 0

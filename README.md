@@ -11,7 +11,8 @@ The ninja is built from Unity primitives under the enemy prefab's `Ninja Visual`
 child, with a headband, mask, scarf and boots. Only this model turns to face travel;
 the gameplay root, collider, health and movement retain their original behavior.
 Both types follow the same waypoints: regular enemies move at **4 units/second**
-and tough enemies at **3 units/second**. Both award **20 Ryo** when defeated.
+and tough enemies at **3 units/second**. Both award **15 Ryo** when defeated
+(configurable on Round Controller).
 The tough prefab overrides the existing Enemy Movement **Movement Speed** setting;
 regular enemies retain the base prefab's speed. `Assets/Prefabs/Enemy.prefab`
 is the regular enemy; `Assets/Prefabs/ToughEnemy.prefab` is its tough variant.
@@ -80,27 +81,36 @@ and frees the pad immediately, including during combat. Victory and Defeat close
 the panel, clear the range preview, and block all tower changes. Restart also
 clears selection, highlighting, and pending sale/upgrade confirmations.
 
-Place Tenten before clicking **Start Wave**. Forest Road has **three waves**.
+Place Tenten before clicking **Start Wave**. Forest Road has **five waves**.
 Here, **R** means regular (3 HP) and **T** means tough (6 HP):
 
-| Wave | Spawn order | Interval |
-| --- | --- | --- |
-| 1 | R, R, R | 2.0 seconds |
-| 2 | R, R, T, R, R | 1.6 seconds |
-| 3 | R, R, T, R, R, T, R | 1.2 seconds |
+| Wave | Spawn order | Count (R / T) | Interval |
+| --- | --- | --- | --- |
+| 1 | R, R, R | 3 (3 / 0) | 2.0 seconds |
+| 2 | R, R, T, R, R | 5 (4 / 1) | 1.6 seconds |
+| 3 | R, R, T, R, R, T, R | 7 (5 / 2) | 1.2 seconds |
+| 4 | T, R, T, T, R, T, R, T, T, R | 10 (4 / 6) | 0.75 seconds |
+| 5 | T, R, R, T, R, R, T, T, R, R, T, R, R, T, T, R, R, T, T, T | 20 (10 / 10) | 0.5 seconds |
 
 Select `Round Controller` to edit each wave's **Spawn Order** dropdown list and
 **Spawn Interval** in the Inspector. List length determines enemy count. The HUD
-shows **Wave 1 of 3** and advances as waves clear.
+shows **Wave 1 of 5** and advances as waves clear.
+**Defeat Reward** on the same component sets the per-enemy payout (15 Ryo).
+Wave 1 retains its introductory spacing; Waves 2–3 add armor, Wave 4 raises
+armored pressure, and Wave 5 sends paired regular ninjas around armored groups.
+The final balance pass replaces only the original regular ninja in **slot 19**
+with an armored ninja. Waves 1–4, tower stats, speeds, and the 15-Ryo reward
+remain unchanged. Regular/armored HP remains **3/6**; the tested 4/8 alternative
+was rejected because both equal-cost layouts lost.
 Each wave waits for a manual Start Wave click; repeated clicks cannot overlap
 waves. Place, sell, or upgrade towers during and between waves using your Ryo.
 Each round starts with **100 Ryo**. The HUD shows the balance and both deployment
-prices. Try Tenten towers on Pads
-2 and 3 to win with the starting budget. Each defeated enemy awards **20 Ryo**
+prices. Early rewards fund a second tower and the first upgrade; reserve Ryo for
+additional coverage before Wave 4. Each defeated enemy awards **15 Ryo**
 once during the wave. Gate arrivals award nothing. Selecting pads, clicking road
 or ground, and canceling panel actions spend nothing.
 Each wave clears only after all its enemies have spawned and been defeated.
-**Victory** appears only after Wave 3 clears;
+**Victory** appears only after Wave 5 clears;
 any enemy reaching the gate immediately causes **Defeat**. The result stays fixed
 and the round stops. **Restart** removes towers, enemies, and projectiles, clears the
 pads, clears all upgrades, restores 100 Ryo, and returns to Wave 1 so you can try again.
@@ -110,7 +120,68 @@ shots (0.9 seconds), and projectile speed (10 units/second). Each physics hit de
 are on `Assets/Prefabs/SasukeTower.prefab`; the projectile is `Assets/Prefabs/Fireball.prefab`.
 The original starter `SampleScene` is also included.
 
-Verified Tenten-only winning sequence using the starting budget and normal rewards:
+Step 26 five-wave winning sequence, using the normal 100-Ryo start and 15-Ryo rewards:
+
+1. Deploy **Genin Tenten on Pad 3** before Wave 1 (100 -> 50 Ryo).
+   After the first defeat, deploy **Sasuke on Pad 2** (65 -> 5).
+   Wave 1 clears with **35 Ryo**.
+2. Start Wave 2. After its second defeat, upgrade **Pad 3 to Chunin**
+   (65 -> 5 Ryo). Wave 2 clears with **50 Ryo**.
+3. Keep both towers through Wave 3; clearing it leaves **155 Ryo**.
+4. Before Wave 4, deploy **Tenten on Pad 1**, then upgrade her to Chunin
+   (155 -> 105 -> 45 Ryo). This spreads attacks across the first road and
+   returning middle road. Wave 4 clears with **195 Ryo**.
+5. Keep those three towers through Wave 5: **Victory, 495 Ryo**, all **45 enemies**
+   defeated. Total purchases/upgrades cost **280 Ryo**; no sales were needed.
+
+Step 26 final Play Mode comparison used the same five-wave configuration, normal Ryo,
+real-time simulation, pad raycasts, and the existing deployment/upgrade button handlers:
+
+| Setup | Purchase / upgrade timing | Spent | Result | Farthest progress in Wave 5 |
+| --- | --- | --- | --- | --- |
+| First/return-road coverage | Chunin Pad 3 + Sasuke Pad 2 as above; add Chunin Pad 1 before Wave 4 | 280 | Victory, 495 Ryo | 38.42 / 66 units |
+| Middle-road overlap | Start Tenten Pad 2; buy Sasuke Pad 5 after first Wave 1 kill; upgrade Pad 2 after second Wave 2 kill; add Chunin Pad 4 before Wave 4 | 280 | Victory, 495 Ryo | 56.19 / 66 units |
+
+The concentrated setup let enemies travel **17.77 units farther** in Wave 5,
+onto the final road, leaving **9.81 units** to the gate versus **27.58** for the
+stronger layout. In Wave 4 it reached 37.53 units versus 24.02. Progress measures
+the farthest position reached by any enemy along the 66-unit waypoint route.
+Both final runs defeated all **45 enemies** before Victory. Purchase/upgrade
+timing stayed the same as the initial Step 26 tests.
+
+Alternatives tested before selecting the near-end-only replacement:
+
+| Candidate | Stronger layout | Middle-road overlap |
+| --- | --- | --- |
+| Original Step 26 Wave 5, 3/6 HP, 9 armored | Victory, 495 Ryo; lead 38.84/66 | Victory, 495 Ryo; lead 55.78/66 |
+| Original lineup, **4/8 HP across all five waves** | Defeat in Wave 5, 405 Ryo; lead 66/66 | Defeat in Wave 5, 405 Ryo; lead 66/66 |
+| 3/6 HP; replace regulars in slots **10 and 19** | Defeat in Wave 5, 465 Ryo; lead 66/66 | Defeat in Wave 5, 480 Ryo; lead 66/66 |
+
+The 4/8-HP trial applied to both enemy types across all five waves as requested;
+each setup defeated 39 enemies before a regular reached the gate. In the
+two-replacement trial, the stronger layout defeated 43 enemies and the overlap
+layout defeated 44 before an armored ninja with 2 HP escaped. A middle-only
+replacement in slot 10 also lost with the stronger layout. The permitted
+single-replacement fallback at **slot 19** preserves the stronger layout's win
+and leaves the overlap layout with much less room before the gate.
+
+The old **Pad 2 Sasuke / Pad 3 Tenten** setup, upgrading Pad 3 as soon as
+Wave 2 rewards permit, previously cleared Waves 1–3 but **lost Wave 4**: a regular
+ninja reached the gate with 1 HP. It had spent 170 Ryo and held **290 Ryo** at
+Defeat (24 kills). Wave 4 is unchanged in the selected version. Add **Tenten on
+Pad 1 and upgrade her before Wave 4** for the tested winning fix above.
+
+Observed spawn order/counts matched the Inspector settings in the final runs;
+spacing was approximately 2.0 / 1.6 / 1.2 / 0.75 / 0.5 seconds. No premature clear
+or Victory occurred, and repeated Start Wave calls did not overlap waves.
+Victory was asserted only at Wave 5 with all 20 of that wave and all 45 overall
+defeated. Restart after tested Victory and Defeat restored **Wave 1 of 5**, six
+empty pads, 100 Ryo, and no enemies/projectiles. Main was saved and Play Mode
+exited. Latest strict compilation and final Console: **0 errors, 0 warnings**.
+Tower stats, predictive aiming, six pads, placement controls, rewards, speeds,
+and the route were unchanged during these follow-up comparisons.
+
+Historical three-wave Tenten-only sequence (before Step 26; the old 20-Ryo reward):
 
 1. Before Wave 1, deploy Genin on **Pads 2 and 3** (100 -> 0 Ryo), then Start Wave.
    Clearing it leaves **60 Ryo**.
