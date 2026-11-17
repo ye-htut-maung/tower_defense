@@ -77,6 +77,15 @@ public class RoundController : MonoBehaviour
         public EnemyType[] spawnOrder;
         [Min(0.1f)] public float spawnInterval = 2f;
 
+        [Min(0)] public int groupSize;
+        [Min(0.1f)] public float groupInterval = 1.5f;
+
+        public float DelayAfterSpawn(int spawnedCount)
+        {
+            bool groupEnded = groupSize > 0 && spawnedCount % groupSize == 0;
+            return Mathf.Max(0.1f, groupEnded ? groupInterval : spawnInterval);
+        }
+
         public WaveSettings(float interval, params EnemyType[] order)
         {
             spawnInterval = interval;
@@ -114,7 +123,16 @@ public class RoundController : MonoBehaviour
             EnemyType.Regular, EnemyType.Tough, EnemyType.Tough, EnemyType.Tough, EnemyType.Tough,
             EnemyType.Regular, EnemyType.Regular, EnemyType.Tough, EnemyType.Tough, EnemyType.Tough,
             EnemyType.Tough, EnemyType.Regular, EnemyType.Regular, EnemyType.Tough, EnemyType.Tough,
-            EnemyType.Tough, EnemyType.Regular, EnemyType.Regular)
+            EnemyType.Tough, EnemyType.Regular, EnemyType.Regular),
+        new WaveSettings(0.4f,
+            EnemyType.Tough, EnemyType.Tough, EnemyType.Tough, EnemyType.Tough, EnemyType.Tough, EnemyType.Tough,
+            EnemyType.Tough, EnemyType.Regular, EnemyType.Regular, EnemyType.Regular, EnemyType.Regular, EnemyType.Regular,
+            EnemyType.Tough, EnemyType.Tough, EnemyType.Tough, EnemyType.Tough, EnemyType.Tough, EnemyType.Tough,
+            EnemyType.Tough, EnemyType.Regular, EnemyType.Regular, EnemyType.Regular, EnemyType.Regular, EnemyType.Regular)
+        {
+            groupSize = 12,
+            groupInterval = 1.5f
+        }
     };
     private int waveIndex;
     public int CurrentWaveNumber => waveIndex + 1;
@@ -166,7 +184,7 @@ public class RoundController : MonoBehaviour
         enemy.GetComponent<EnemyMovement>().ReachedGate += OnReachedGate;
         enemies.Add(enemy);
         SpawnedCount++;
-        nextSpawnTime = Time.time + Mathf.Max(0.1f, waves[waveIndex].spawnInterval);
+        nextSpawnTime = Time.time + waves[waveIndex].DelayAfterSpawn(SpawnedCount);
         RefreshUI();
     }
 
