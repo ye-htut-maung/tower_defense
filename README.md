@@ -3,7 +3,8 @@
 Unity project using Unity **6000.6.0f1** and the Universal Render Pipeline (URP).
 The current map is **Hidden Leaf Forest Road** in `Assets/Scenes/Main.unity`.
 It contains a primitive road, six enemy waypoints, a spawn marker, a textured
-Hidden Leaf Gate, and six tower pads. Regular enemies are slim dark-navy ninjas
+Hidden Leaf Gate, stone tower pads with Leaf emblems, and painted-style tree,
+rock and grass clusters around the map border. Regular enemies are slim dark-navy ninjas
 with **3 HP**; tough enemies are broader armored ninjas with **6 HP**, rounded
 burnt-orange shoulder plates, a charcoal outfit and a charcoal helmet with an orange crest.
 The ninja is built from Unity primitives under the enemy prefab's `Ninja Visual`
@@ -240,6 +241,28 @@ three-wave strategy finished **Victory with 230 Ryo**. Console during verificati
 **0 errors, 0 warnings**. Main saved with empty pads and Play Mode exited. Final Editor Console: **0 errors, 1 warning** from Unity AI Toolkit
 (Account API unavailable within 30 seconds); no gameplay warnings were observed.
 
+
+## Forest Road scenery and stone pads (Step 24)
+
+Eight border clusters contain 20 faceted, layered trees, 24 rocks and 56 grass
+tufts in muted jade, moss and warm stone tones that complement the painted gate.
+Shared meshes, materials and a softly mottled stone texture live in
+`Assets/Art/ForestRoad/`. Scenery has no colliders and uses Ignore Raycast.
+
+The six existing pad surfaces are now weathered stone with subtle spiral Leaf
+emblems and readable numbers. The existing gold selection ring and range preview
+remain unchanged. Original pad colliders, positions and surface heights are
+preserved, so towers still sit at the same height. Camera, route, endpoint defeat
+logic and pad input/deployment code are unchanged.
+
+Play Mode native mouse clicks selected each of Pads 1–6, displayed its gold
+highlight, and canceled without spending Ryo or deploying a tower. Temporary
+in-memory Editor focus routing was restored afterward. A mesh-ray check sampled
+578 pad/route/body/health-bar sightlines with no new scenery intersections.
+Wave 3 Game view showed unobstructed enemies and readable health bars; the normal
+mixed Tenten/Sasuke strategy finished **Victory with 230 Ryo**. Console during
+verification and cleanup: **0 errors, 0 warnings**. Main saved with empty pads and
+Play Mode exited. Review screenshots remain local and uncommitted.
 
 ## Final Play Mode verification (Step 20)
 
