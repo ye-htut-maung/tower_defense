@@ -3,9 +3,9 @@
 Unity project using Unity **6000.6.0f1** and the Universal Render Pipeline (URP).
 The current map is **Hidden Leaf Forest Road** in `Assets/Scenes/Main.unity`.
 It contains a primitive road, six enemy waypoints, a spawn marker, a textured
-Hidden Leaf Gate, and six tower pads. Regular enemies are violet hooded ninja
-placeholders with **3 HP**; tough enemies are armored ninjas with **6 HP**, broad
-burnt-orange shoulder plates, a charcoal outfit and a steel helmet with an orange crest.
+Hidden Leaf Gate, and six tower pads. Regular enemies are slim dark-navy ninjas
+with **3 HP**; tough enemies are broader armored ninjas with **6 HP**, rounded
+burnt-orange shoulder plates, a charcoal outfit and a charcoal helmet with an orange crest.
 The ninja is built from Unity primitives under the enemy prefab's `Ninja Visual`
 child, with a headband, mask, scarf and boots. Only this model turns to face travel;
 the gameplay root, collider, health and movement retain their original behavior.
@@ -217,13 +217,38 @@ visual polish.
 ![Fireball core and short ember trail](Documentation/Screenshots/fireball-flight.png)
 ![Quick burst at a confirmed enemy impact](Documentation/Screenshots/fireball-impact.png)
 
+## Shared enemy styling (Step 23)
+
+Both enemy prefabs now share rounded garment shapes, steel headbands, warm skin
+details, linen forearm wraps and sandals, using URP Lit materials in
+`Assets/Art/EnemyNinjas/`. This palette and their compact proportions sit alongside
+the imported Tenten and Sasuke models. The regular ninja is slim and dark navy
+with a muted burgundy sash. The tough ninja has a wider charcoal torso, rounded
+burnt-orange shoulder armor with small steel rivets, and a helmet with an orange
+crest. These changes reuse the existing `Ninja Visual` children and facing logic.
+
+Only visual children changed. Root colliders, transforms, movement, health,
+20-Ryo rewards and wave configuration are preserved: regular 3 HP / 4 units per
+second, tough 6 HP / 3 units per second. Health-bar offsets remain 1.4 and 1.55;
+visual children have no colliders.
+
+In Play Mode, Wave 2 showed both enemy types together and clearly distinguishable
+from the gameplay camera, with a readable damaged armored health bar. Natural
+Tenten and Sasuke impacts updated regular bars to 2/3 and 1/3 and tough bars to
+4/6 and 2/6, with camera-facing orientation maintained. The normal-budget mixed
+three-wave strategy finished **Victory with 230 Ryo**. Console during verification:
+**0 errors, 0 warnings**. Main saved with empty pads and Play Mode exited. Final Editor Console: **0 errors, 1 warning** from Unity AI Toolkit
+(Account API unavailable within 30 seconds); no gameplay warnings were observed.
+
+
 ## Final Play Mode verification (Step 20)
 
 The tough variant reuses the regular `Ninja Visual` child, adding broad
 burnt-orange shoulder plates and a steel helmet over a charcoal outfit. Its
 original capsule renderer is disabled; the gameplay capsule collider is retained.
-The visual primitives have no colliders. Materials are in
-`Assets/Materials/ArmoredNinja/`; geometry and material overrides are saved in
+The visual primitives have no colliders. The original Step 20 materials remain in
+`Assets/Materials/ArmoredNinja/`; Step 23 uses the shared palette described above.
+Geometry and material overrides are saved in
 `Assets/Prefabs/ToughEnemy.prefab`. Movement, HP, rewards, wave placement and
 predictive aiming are unchanged.
 
